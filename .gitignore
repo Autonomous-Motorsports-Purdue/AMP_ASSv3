@@ -1,0 +1,38 @@
+# colcon build directories
+build/
+install/
+log/
+
+# colcon files
+COLCON_IGNORE
+AMENT_IGNORE
+
+# miscellaneous
+
+# VSCode
+.vscode/*
+.history/
+*.vsix
+
+# Visual Studio
+*.VC.db
+*.VC.opendb
+
+# Python cache files
+*.pyc
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# HTML
+*.html
+
+# Mac
+.DS_Store
