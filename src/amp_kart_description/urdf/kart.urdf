@@ -1,0 +1,165 @@
+<?xml version="1.0" ?>
+<robot name="kart" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="chassis_width" value="1.42" />
+  <xacro:property name="chassis_length" value="1.94" />
+  <xacro:property name="chassis_height" value="0.5" />
+  <xacro:property name="chassis_xoff" value="-0.60" />
+  <xacro:property name="chassis_zoff" value="0.171" />
+  <xacro:property name="chassis_mass" value="40" />
+
+  <xacro:property name="fwheel_radius" value="0.13" />
+  <xacro:property name="fwheel_width" value="0.13" />
+  <xacro:property name="fwheel_yoff" value="0.71" />
+  <xacro:property name="fwheel_mass" value="0.4" />
+
+  <xacro:property name="wheelbase" value="1.05" />
+  <xacro:property name="rwheel_radius" value="0.14" />
+  <xacro:property name="rwheel_width" value="0.21" />
+  <xacro:property name="rwheel_yoff" value="0.71" />
+  <xacro:property name="rwheel_zoff" value="${rwheel_radius-fwheel_radius}" />
+  <xacro:property name="rwheel_mass" value="0.5" />
+
+  <xacro:property name="lidar_xoff" value="-0.5" />
+  <xacro:property name="lidar_zoff" value="0.5" />
+
+  <xacro:property name="zed_width" value="0.175" />
+  <xacro:property name="zed_length" value="0.033" />
+  <xacro:property name="zed_height" value="0.03" />
+  <xacro:property name="zed_xoff" value="0.25" />
+  <xacro:property name="zed_zoff" value="0.35" />
+  <xacro:property name="zed_mass" value="0.02" />
+
+  <material name="white">
+    <color rgba="1 1 1 1" />
+  </material>
+
+  <material name="red">
+    <color rgba="1 0 0 1" />
+  </material>
+
+  <material name="green">
+    <color rgba="0 1 0 1" />
+  </material>
+
+  <material name="blue">
+    <color rgba="0 0 1 1" />
+  </material>
+
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}" />
+      </geometry>
+      <origin xyz="${chassis_xoff} 0 ${chassis_zoff}" />
+      <material name="white" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}" />
+      </geometry>
+      <origin xyz="${chassis_xoff} 0 ${chassis_zoff}" />
+    </collision>
+    <xacro:default_inertial mass="${chassis_mass}" />
+  </link>
+
+  <!-- front wheel -->
+  <xacro:macro name="fwheel" params="prefix reflect">
+    <link name="${prefix}_fwheel_link">
+      <visual>
+        <geometry>
+          <cylinder length="${fwheel_width}" radius="${fwheel_radius}" />
+        </geometry>
+        <material name="blue" />
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${fwheel_width}" radius="${fwheel_radius}" />
+        </geometry>
+      </collision>
+      <xacro:default_inertial mass="${fwheel_mass}" />
+    </link>
+
+    <joint name="$base_${prefix}_fwheel" type="fixed">
+      <parent link="base_link" />
+      <child link="${prefix}_fwheel_link" />
+      <origin xyz="0 ${reflect*fwheel_yoff} 0" rpy="${pi/2} 0 0" />
+      <axis xyz="0 1 0" />
+    </joint>
+  </xacro:macro>
+  <xacro:fwheel prefix="left" reflect="1" />
+  <xacro:fwheel prefix="right" reflect="-1" />
+
+  <!-- rear wheel -->
+  <xacro:macro name="rwheel" params="prefix reflect">
+    <link name="${prefix}_rwheel_link">
+      <visual>
+        <geometry>
+          <cylinder length="${rwheel_width}" radius="${rwheel_radius}" />
+        </geometry>
+        <material name="green" />
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="${rwheel_width}" radius="${rwheel_radius}" />
+        </geometry>
+      </collision>
+      <xacro:default_inertial mass="${rwheel_mass}" />
+    </link>
+
+    <joint name="$base_${prefix}_rwheel" type="fixed">
+      <parent link="base_link" />
+      <child link="${prefix}_rwheel_link" />
+      <origin xyz="-${wheelbase} ${reflect*rwheel_yoff} 0" rpy="${pi/2} 0 0" />
+      <axis xyz="0 1 0" />
+    </joint>
+  </xacro:macro>
+  <xacro:rwheel prefix="left" reflect="1" />
+  <xacro:rwheel prefix="right" reflect="-1" />
+
+  <!-- lidar -->
+  <xacro:include
+    filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"
+  />
+  <xacro:VLP-16
+    parent="base_link"
+    name="lidar"
+    topic="/velodyne_points"
+    hz="10"
+    samples="440"
+    gpu="false"
+  >
+  <origin xyz="${lidar_xoff} 0 ${lidar_zoff}" rpy="0 0 0" />
+</xacro:VLP-16>
+
+<!-- zed -->
+<link name="zed_link">
+  <visual>
+    <geometry>
+      <box size="${zed_length} ${zed_width} ${zed_height}" />
+    </geometry>
+    <material name="red" />
+  </visual>
+  <collision>
+    <geometry>
+      <box size="${zed_length} ${zed_width} ${zed_height}" />
+    </geometry>
+  </collision>
+  <xacro:default_inertial mass="${zed_mass}" />
+</link>
+
+<joint name="$base_zed" type="fixed">
+  <parent link="base_link" />
+  <child link="zed_link" />
+  <origin xyz="${zed_xoff} 0 ${zed_zoff}" />
+  <axis xyz="0 0 0" />
+</joint>
+
+</robot>
