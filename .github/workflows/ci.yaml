@@ -1,0 +1,32 @@
+name: Build and Test the Software Stack
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:focal
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up ROS2 Foxy
+        uses: ros-tooling/setup-ros@v0.4
+        with:
+          required-ros-distributions: foxy
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          rosdep update
+          DEBIAN_FRONTEND=noninteractive rosdep install --from-paths src --ignore-src --default-yes -qr
+
+      - name: Build packages
+        run: |
+          . /opt/ros/foxy/setup.sh
+          colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+
+      - name: Test packages
+        run: colcon test
