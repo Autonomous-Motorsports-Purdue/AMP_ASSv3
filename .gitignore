@@ -7,6 +7,10 @@ log/
 COLCON_IGNORE
 AMENT_IGNORE
 
+# micro-ros files
+src/uros/
+*.repos
+
 # miscellaneous
 
 # VSCode

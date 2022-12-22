@@ -1,3 +1,7 @@
 [submodule "src/zed-ros2-wrapper"]
 	path = src/zed-ros2-wrapper
 	url = git@github.com:stereolabs/zed-ros2-wrapper.git
+[submodule "src/micro-ros-setup"]
+	path = src/micro-ros-setup
+	url = https://github.com/micro-ROS/micro_ros_setup.git
+	branch = foxy
