@@ -21,27 +21,42 @@ repos:
     rev: v4.2.0
     hooks:
       - id: check-added-large-files
+        stages: [commit, merge-commit, push, manual]
       - id: check-case-conflict
+        stages: [commit, merge-commit, push, manual]
       - id: check-json
+        stages: [commit, merge-commit, push, manual]
       - id: check-merge-conflict
+        stages: [commit, merge-commit, push, manual]
       - id: check-symlinks
         exclude: CMakeLists.txt
+        stages: [commit, merge-commit, push, manual]
       - id: check-toml
+        stages: [commit, merge-commit, push, manual]
       - id: check-xml
         files: '.*\.(xml|launch)'
+        stages: [commit, merge-commit, push, manual]
       - id: check-yaml
+        stages: [commit, merge-commit, push, manual]
       - id: debug-statements
+        stages: [commit, merge-commit, push, manual]
       - id: destroyed-symlinks
         exclude: CMakeLists.txt
+        stages: [commit, merge-commit, push, manual]
       - id: detect-private-key
+        stages: [commit, merge-commit, push, manual]
       - id: end-of-file-fixer
+        stages: [commit, merge-commit, push, manual]
       - id: mixed-line-ending
+        stages: [commit, merge-commit, push, manual]
       - id: trailing-whitespace
+        stages: [commit, merge-commit, push, manual]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v2.7.1"
     hooks:
       - id: prettier
+        stages: [commit, merge-commit, push, manual]
         additional_dependencies:
           - prettier
           - "@prettier/plugin-xml"
@@ -50,6 +65,7 @@ repos:
     rev: v0.32.0
     hooks:
       - id: yapf
+        stages: [commit, merge-commit, push, manual]
 
   - repo: local
     hooks:
@@ -60,6 +76,7 @@ repos:
         language: system
         files: \.(c|cc|cxx|cpp|frag|glsl|h|hpp|hxx|ih|ispc|ipp|java|js|m|proto|vert)$
         args: ["-fallback-style=none", "-i"]
+        stages: [commit, merge-commit, push, manual]
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
@@ -67,3 +84,14 @@ repos:
       - id: codespell
         args: ["--write-changes", "--ignore-words=.codespell_words"]
         exclude: CHANGELOG.rst
+        stages: [commit, merge-commit, push, manual]
+
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.18.0
+    hooks:
+      - id: gitlint
+        stages: [commit-msg, manual]
+      - id: gitlint-ci
+
+default_install_hook_types: [pre-commit, pre-merge-commit, pre-push, commit-msg]
+default_stages: [commit, merge-commit, commit-msg, push, manual]
