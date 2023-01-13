@@ -17,7 +17,14 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 str(
                     get_package_share_path('teleop_twist_joy') / 'launch' /
-                    'teleop-launch.py'))),
+                    'teleop-launch.py')),
+            launch_arguments={
+                'config_filepath':
+                str(
+                    get_package_share_path('amp_launch_tests') / 'config' /
+                    'xbox.config.yaml')
+            }.items(),
+        ),
         Node(package='micro_ros_agent',
              executable='micro_ros_agent',
              name='micro_ros_agent',
