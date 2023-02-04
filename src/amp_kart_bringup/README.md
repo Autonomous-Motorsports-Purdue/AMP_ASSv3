@@ -4,19 +4,19 @@ Contains files needed to start the kart.
 
 ## Directory Tree
 
-- `launch`
+- `launch/`
   - `bringup.launch.py` _Start the high-level navigation software stack_
   - `localization.launch.py` _Initialize map_server and amcl_
   - `navigation.launch.py` _Initialize Nav2_
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
   - `slam.launch.py` _Initialize map_server and slam_toolbox_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
-- `maps`
+- `maps/`
   - `turtlebot3.world.pgm`
   - `turtlebot3.world.yaml`
-- `params`
+- `params/`
   - `VLP16.params.yaml` _VLP16 parameters_
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
-- `rviz`
+- `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_

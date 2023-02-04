@@ -5,10 +5,10 @@ of the kart.
 
 ## Directory Tree
 
-- `launch`
+- `launch/`
   - `display_kart.launch.py` _Run robot_state_publisher and join_state_publisher
     and view the URDF in RViz_
-- `rviz`
+- `rviz/`
   - `urdf.rviz.yaml` _RViz config to view URDF_
-- `urdf`
+- `urdf/`
   - `kart.urdf` _Kart URDF file_
