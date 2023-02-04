@@ -1,17 +1,28 @@
 #! /bin/python3
 
 from functools import reduce
+import re
+import sys
 import os
-import pprint
 
 ignore_set = ('CMakeLists.txt', 'README.md', 'package.xml')
 
+start_marker = '<!-- directory-tree-check-start -->\n'
+end_marker = '<!-- directory-tree-check-end -->\n'
+
 
 def check_pkg_readme(pkg_dir, dir_tree):
-    pp = pprint.PrettyPrinter(indent=2)
-    print(pkg_dir)
-    pp.pprint(dir_tree)
+    with open(os.path.join(pkg_dir, 'README.md'), 'r') as f:
+        lines = f.readlines()
+        md_tree = ''.join(lines[lines.index(start_marker) +
+                                2:lines.index(end_marker) - 1])
 
+    if dir_tree != get_dir_tree_from_md(md_tree):
+        sys.exit(f'Package directory "{pkg_dir}" README is not updated.')
+
+
+def get_dir_tree_from_md(md_tree):
+    print(md_tree)
     pass
 
 
