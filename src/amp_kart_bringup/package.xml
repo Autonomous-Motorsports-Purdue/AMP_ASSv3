@@ -3,7 +3,7 @@
 <package format="3">
   <name>amp_kart_bringup</name>
   <version>0.0.0</version>
-  <description>Launch files for the kart</description>
+  <description>Files to start the kart</description>
   <maintainer email="achungma@purdue.edu">achungma</maintainer>
   <license>Apache-2.0</license>
 
