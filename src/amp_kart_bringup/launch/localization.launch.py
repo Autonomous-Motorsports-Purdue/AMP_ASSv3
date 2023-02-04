@@ -62,7 +62,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'map',
             default_value=os.path.join(share_dir, 'maps',
-                                       'turtlebot3_world.yaml'),
+                                       'turtlebot3.world.yaml'),
             description='Full path to map yaml file to load'),
         DeclareLaunchArgument(
             'use_sim_time',
