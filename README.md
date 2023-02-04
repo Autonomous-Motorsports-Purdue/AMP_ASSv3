@@ -97,3 +97,13 @@ Under `src`, on clone, there should be 7 modules (8 when micro-ros-agent is setu
 - [`src/amp_launch_tests`](src/amp_launch_tests)
 - `src/micro-ros-setup`
 - `src/zed-ros2-wrapper`
+
+Please follow ROS standard naming and project conventions:
+
+- [Best Practices](https://docs.ros.org/en/rolling/The-ROS2-Project/Contributing/Developer-Guide.html)
+- [ROS package naming](https://www.ros.org/reps/rep-0144.html)
+
+## Technical Documents
+
+- [Autonomous Navigation Stack](https://docs.google.com/document/d/1H4zmVq_6n9eVdnM5NY5JfDTC1Pg-OLNYgg7p091wSyc/edit?usp=sharing)
+- [Race State System](https://docs.google.com/document/d/1WoQyybG2NdWSwledeUXwAQzwZzE1zPwBlswZRG5uL4k/edit?usp=sharing)
