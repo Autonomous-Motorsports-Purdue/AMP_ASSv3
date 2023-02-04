@@ -4,6 +4,8 @@ Contains files to run on-ground tests.
 
 ## Directory Tree
 
+<!-- directory-tree-check-start -->
+
 - `config/`
   - `xbox.config.yaml` _XBox One controller setup for teleop joy_
 - `launch/`
@@ -12,3 +14,5 @@ Contains files to run on-ground tests.
     on-kart Jetson_
   - `teleop_joy_micro_ros_server.launch.py` _Launch teleop_twist_joy, run on
     Remote Computer_
+
+<!-- directory-tree-check-end -->

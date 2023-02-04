@@ -4,6 +4,8 @@ Contains files needed to start the kart.
 
 ## Directory Tree
 
+<!-- directory-tree-check-start -->
+
 - `launch/`
   - `bringup.launch.py` _Start the high-level navigation software stack_
   - `localization.launch.py` _Initialize map_server and amcl_
@@ -17,3 +19,5 @@ Contains files needed to start the kart.
   - `nav2.params.yaml` _Nav2 parameters_
 - `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_
+
+<!-- directory-tree-check-end -->
