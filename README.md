@@ -40,14 +40,6 @@ git submodule update --init src/micro-ros-setup/
 git submodule update --init src/zed-ros2-wrapper/
 ```
 
-#### Setting up `micro-ros`
-
-Run the `setup-micro-ros-agent.sh` script:
-
-```
-./scripts/setup-micro-ros-agent.sh
-```
-
 #### Setting up [`pre-commit`](https://pre-commit.com/)
 
 The project has a [pre-commit](https://pre-commit.com/) setup to allow
@@ -72,6 +64,15 @@ your code. Remember to add the changes made by it when you commit!
 rosdep update
 rosdep install --from-paths src -iry
 colcon build --symlink-install
+```
+
+#### Setting up `micro-ros`
+
+Run the `setup-micro-ros-agent.sh` script to install and build the
+[`micro-ros-agent`](https://micro.ros.org/docs/overview/features/):
+
+```
+./scripts/setup-micro-ros-agent.sh
 ```
 
 ### Running the Default Nav2 Sim
