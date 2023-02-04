@@ -1,6 +1,9 @@
-# amp_kart_bt_navigator
+# `amp_kart_bt_navigator`
 
-`amp_kart_bt_navigator` contains the behavior tree xml and other files that
-will be used for testing.
+Contains files for the behavior trees.
 
-All behavior trees are located under `behavior_trees`
+## Directory Tree
+
+- `behavior_trees/`
+  - `navigate_w_replanning_and_recovery.xml` _Default behavior tree for the
+    default turtlebot3 simulation_

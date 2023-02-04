@@ -9,7 +9,7 @@ from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
     share_path = get_package_share_path('amp_kart_bringup')
-    params_file = str(share_path / 'config' / 'VLP16.params.yaml')
+    params_file = str(share_path / 'params' / 'VLP16.params.yaml')
     with open(params_file, 'r') as f:
         params = yaml.safe_load(f)
 
