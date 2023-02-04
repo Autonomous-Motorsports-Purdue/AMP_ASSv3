@@ -19,4 +19,4 @@ Contains files needed to start the kart.
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
 - `rviz`
-  - `nav2_default_view.rviz` _RViz config for Nav2_
+  - `nav2_default_view.rviz.yaml` _RViz config for Nav2_
