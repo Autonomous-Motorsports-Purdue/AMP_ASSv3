@@ -6,7 +6,7 @@ of the kart.
 ## Directory Tree
 
 - `launch/`
-  - `display_kart.launch.py` _Run robot_state_publisher and join_state_publisher
+  - `display_kart.launch.py` _Run robot_state_publisher and joint_state_publisher
     and view the URDF in RViz_
 - `rviz/`
   - `urdf.rviz.yaml` _RViz config to view URDF_
