@@ -8,8 +8,8 @@ worlds should also be added.
 ## Directory Tree
 
 - `launch/`
-  - `tb3_simulation.launch.py` _Run default turtlebot3 Nav2 simulation_
+  - `purdue_gp_simulation.launch.py` _Run simulation on the Purdue GP track_
 - `urdf/`
-  - `turtlebot3_waffle.urdf` _URDF description of turtlebot3 Waffle robot_
+  - `turtlebot3_waffle.urdf.xml` _URDF description of turtlebot3 Waffle robot_
 - `worlds/`
-  - `waffle.model` _turtlebot3 world model file_
+  - `purdue_gp_track.sdf.xml` _Purdue GP track world file with tb3 waffle model_

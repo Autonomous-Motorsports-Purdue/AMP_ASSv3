@@ -11,9 +11,6 @@ Contains files needed to start the kart.
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
   - `slam.launch.py` _Initialize map_server and slam_toolbox_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
-- `maps/`
-  - `turtlebot3.world.pgm`
-  - `turtlebot3.world.yaml`
 - `params/`
   - `VLP16.params.yaml` _VLP16 parameters_
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
