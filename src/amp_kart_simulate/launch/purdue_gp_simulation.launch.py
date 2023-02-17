@@ -68,13 +68,12 @@ def generate_launch_description():
         description='Whether to apply a namespace to the navigation stack')
 
     declare_slam_cmd = DeclareLaunchArgument('slam',
-                                             default_value='False',
+                                             default_value='True',
                                              description='Whether run a SLAM')
 
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
-        default_value=os.path.join(bringup_dir, 'maps',
-                                   'turtlebot3.world.yaml'),
+        default_value=os.path.join(bringup_dir, 'maps', 'TODO.change'),
         description='Full path to map file to load')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -130,7 +129,8 @@ def generate_launch_description():
         #              https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/91
         # default_value=os.path.join(get_package_share_directory('turtlebot3_gazebo'),
         #                            'worlds/turtlebot3_worlds/waffle.model'),
-        default_value=os.path.join(sim_dir, 'worlds', 'purdue_gp_track.model'),
+        default_value=os.path.join(sim_dir, 'worlds',
+                                   'purdue_gp_track.sdf.xml'),
         description='Full path to world model file to load')
 
     # Specify the actions
@@ -146,7 +146,7 @@ def generate_launch_description():
                                              cwd=[launch_dir],
                                              output='screen')
 
-    urdf = os.path.join(sim_dir, 'urdf', 'turtlebot3_waffle.urdf')
+    urdf = os.path.join(sim_dir, 'urdf', 'turtlebot3_waffle.urdf.xml')
 
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
