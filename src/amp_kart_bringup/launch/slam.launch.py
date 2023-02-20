@@ -71,7 +71,10 @@ def generate_launch_description():
     # Nodes launching commands
     start_slam_toolbox_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(slam_launch_file),
-        launch_arguments={'use_sim_time': use_sim_time}.items())
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'params_file': params_file,
+        }.items())
 
     start_map_saver_server_cmd = Node(package='nav2_map_server',
                                       node_executable='map_saver_server',

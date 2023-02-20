@@ -84,7 +84,7 @@ file.
 source install/local_setup.bash
 export TURTLEBOT3_MODEL=waffle
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/foxy/share/turtlebot3_gazebo/models
-ros2 launch amp_kart_simulate tb3_simulation.launch.py
+ros2 launch amp_kart_simulate purdue_gp_simulation.launch.py
 ```
 
 ## Project Layout

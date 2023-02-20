@@ -61,8 +61,7 @@ def generate_launch_description():
                               description='Top-level namespace'),
         DeclareLaunchArgument(
             'map',
-            default_value=os.path.join(share_dir, 'maps',
-                                       'turtlebot3.world.yaml'),
+            default_value=os.path.join(share_dir, 'maps', 'TODO.change'),
             description='Full path to map yaml file to load'),
         DeclareLaunchArgument(
             'use_sim_time',
