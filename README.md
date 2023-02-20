@@ -101,6 +101,8 @@ Under `src`, on clone, there should be 7 modules (8 when micro-ros-agent is setu
 
 ## Technical Documents
 
+If you are running into issues, consult the [troubleshooting guide](TROUBLESHOOTING.md).
+
 Design docs for the major components under construction.
 
 - [Autonomous Navigation Stack](https://docs.google.com/document/d/1H4zmVq_6n9eVdnM5NY5JfDTC1Pg-OLNYgg7p091wSyc/edit?usp=sharing)
