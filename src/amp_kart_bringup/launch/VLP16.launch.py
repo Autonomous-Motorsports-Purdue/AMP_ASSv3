@@ -16,6 +16,7 @@ def generate_launch_description():
     driver_params = params['velodyne_driver_node']['ros__parameters']
     convert_params = params['velodyne_transform_node']['ros__parameters']
     convert_params['calibration'] = str(share_path / 'params' / 'VLP16db.yaml')
+    laserscan_params = params['velodyne_laserscan_node']['ros__parameters']
 
     container = ComposableNodeContainer(
         name='velodyne_container',
@@ -28,9 +29,13 @@ def generate_launch_description():
                            name='velodyne_driver_node',
                            parameters=[driver_params]),
             ComposableNode(package='velodyne_pointcloud',
-                           plugin='velodyne_pointcloud::Transform',
-                           name='velodyne_transform_node',
+                           plugin='velodyne_pointcloud::Convert',
+                           name='velodyne_convert_node',
                            parameters=[convert_params]),
+            ComposableNode(package='velodyne_laserscan',
+                           plugin='velodyne_laserscan::VelodyneLaserScan',
+                           name='velodyne_laserscan_node',
+                           parameters=[laserscan_params]),
         ],
         output='both')
 
