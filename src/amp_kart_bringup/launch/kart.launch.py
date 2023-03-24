@@ -16,7 +16,7 @@ def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
     zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
     share_path = get_package_share_directory('amp_kart_description')
-    model_path = os.path.join(share_path, 'urdf', 'kart.urdf')
+    model_path = os.path.join(share_path, 'urdf', 'racecar.xacro')
 
     robot_description = ParameterValue(xacro.process_file(
         str(model_path)).toprettyxml(indent='  '),
