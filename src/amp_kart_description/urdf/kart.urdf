@@ -1,21 +1,21 @@
 <?xml version="1.0" ?>
 <robot name="kart" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:property name="chassis_width" value="1.42" />
-  <xacro:property name="chassis_length" value="1.94" />
+  <xacro:property name="chassis_width" value="1.4224" />
+  <xacro:property name="chassis_length" value="1.397" />
   <xacro:property name="chassis_height" value="0.5" />
   <xacro:property name="chassis_xoff" value="-0.60" />
   <xacro:property name="chassis_zoff" value="0.171" />
   <xacro:property name="chassis_mass" value="40" />
 
-  <xacro:property name="fwheel_radius" value="0.13" />
-  <xacro:property name="fwheel_width" value="0.13" />
+  <xacro:property name="fwheel_radius" value="0.127" />
+  <xacro:property name="fwheel_width" value="0.13335" />
   <xacro:property name="fwheel_yoff" value="0.71" />
   <xacro:property name="fwheel_mass" value="0.4" />
 
   <xacro:property name="wheelbase" value="1.05" />
-  <xacro:property name="rwheel_radius" value="0.14" />
-  <xacro:property name="rwheel_width" value="0.21" />
+  <xacro:property name="rwheel_radius" value="0.12065" />
+  <xacro:property name="rwheel_width" value="0.2159" />
   <xacro:property name="rwheel_yoff" value="0.71" />
   <xacro:property name="rwheel_zoff" value="${rwheel_radius-fwheel_radius}" />
   <xacro:property name="rwheel_mass" value="0.5" />
@@ -26,7 +26,7 @@
   <xacro:property name="zed_width" value="0.175" />
   <xacro:property name="zed_length" value="0.033" />
   <xacro:property name="zed_height" value="0.03" />
-  <xacro:property name="zed_xoff" value="0.25" />
+  <xacro:property name="zed_xoff" value="0" />
   <xacro:property name="zed_zoff" value="0.35" />
   <xacro:property name="zed_mass" value="0.02" />
 
@@ -140,7 +140,82 @@
 </xacro:VLP-16>
 
 <!-- zed -->
-<link name="zed_link">
+<!-- zed camera -->
+  <link name="zed_camera_link">
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+    <collision>
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <geometry>
+        <box size="${zed_length} ${zed_width} ${zed_height}" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <geometry>
+        <box size="${zed_length} ${zed_width} ${zed_height}" />
+      </geometry>
+      <material name="red" />
+    </visual>
+  </link>
+
+  <joint name="zed_camera_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="zed_camera_link" />
+    <axis xyz="0 0 1" />
+    <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0" /> -->
+  </joint>
+
+
+  <!-- zed camera lenses -->
+  <!-- It seems these have to have a non-zero mass to have a camera attached? -->
+  <link
+    name="camera_link"
+  ><!-- this needs to match the name in zed_wrapper/zed_tf.launch -->
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <link name="zed_camera_right_link">
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+  <link name="zed_camera_center">
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="zed_camera_left_joint" type="fixed">
+    <origin xyz="${zed_xoff} 0.06 ${zed_zoff}" rpy="0 0 0" />
+    <parent link="zed_camera_link" />
+    <child link="camera_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <joint name="zed_camera_right_joint" type="fixed">
+    <origin xyz="${zed_xoff} -0.06 ${zed_zoff}" rpy="0 0 0" />
+    <parent link="zed_camera_link" />
+    <child link="zed_camera_right_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <joint name="zed_camera_center_joint" type="fixed">
+    <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+    <parent link="zed_camera_link" />
+    <child link="zed_camera_center" />
+    <axis xyz="0 0 1" />
+  </joint>
+<!-- <link name="zed_link">
   <visual>
     <geometry>
       <box size="${zed_length} ${zed_width} ${zed_height}" />
@@ -160,6 +235,6 @@
   <child link="zed_link" />
   <origin xyz="${zed_xoff} 0 ${zed_zoff}" />
   <axis xyz="0 0 0" />
-</joint>
+</joint> -->
 
 </robot>

@@ -3,6 +3,73 @@
 
   <xacro:include filename="$(find amp_kart_description)/urdf/macros.xacro" />
 
+  <!-- Kart Dimmensions-->
+
+  <xacro:property name="chassis_width" value="1.42" />
+  <xacro:property name="chassis_length" value="1.94" />
+  <xacro:property name="chassis_height" value="0.5" />
+  <xacro:property name="chassis_xoff" value="-0.60" />
+  <xacro:property name="chassis_zoff" value="0.171" />
+  <xacro:property name="chassis_mass" value="40" />
+
+  <xacro:property name="fwheel_radius" value="0.13" />
+  <xacro:property name="fwheel_width" value="0.13" />
+  <xacro:property name="fwheel_yoff" value="0.71" />
+  <xacro:property name="fwheel_mass" value="0.4" />
+
+  <xacro:property name="wheelbase" value="1.05" />
+  <xacro:property name="rwheel_radius" value="0.14" />
+  <xacro:property name="rwheel_width" value="0.21" />
+  <xacro:property name="rwheel_yoff" value="0.71" />
+  <xacro:property name="rwheel_zoff" value="${rwheel_radius-fwheel_radius}" />
+  <xacro:property name="rwheel_mass" value="0.5" />
+
+
+
+  <!-- Necessary Dimensions -->
+
+  <xacro:property name="chassisInertia_xoff" value="0" />
+  <xacro:property name="chassisInertia_yoff" value="0" />
+  <xacro:property name="chassisInertia_zoff" value="0" />
+
+  <xacro:property name="baseLink_xoff" value="-0.25" />
+  <xacro:property name="baseLink_yoff" value="0" />
+  <xacro:property name="baseLink_zoff" value="0.05" />
+
+  <xacro:property name="lRear_xoff" value="0" />
+  <xacro:property name="lRear_yoff" value="0.1" />
+  <xacro:property name="lRear_zoff" value="0" />
+
+  <xacro:property name="rRear_xoff" value="0" />
+  <xacro:property name="rRear_yoff" value="-0.1" />
+  <xacro:property name="rRear_zoff" value="0" />
+
+  <xacro:property name="lSteerHinge_xoff" value="0.325" />
+  <xacro:property name="lSteerHinge_yoff" value="0.1" />
+  <xacro:property name="lSteerHinge_zoff" value="0" />
+
+  <xacro:property name="rSteerHinge_xoff" value="0.325" />
+  <xacro:property name="rSteerHinge_yoff" value="-0.1" />
+  <xacro:property name="rSteerHinge_zoff" value="0" />
+
+  <xacro:property name="lfront_xoff" value="0" />
+  <xacro:property name="lfront_yoff" value="0" />
+  <xacro:property name="lfront_zoff" value="0" />
+
+  <xacro:property name="rfront_xoff" value="0" />
+  <xacro:property name="rfront_yoff" value="0" />
+  <xacro:property name="rfront_zoff" value="0" />
+
+  <xacro:property name="lidar_xoff" value="0.25" />
+  <xacro:property name="lidar_zoff" value="0.4064" />
+
+  <xacro:property name="zed_width" value="0.175" />
+  <xacro:property name="zed_length" value="0.033" />
+  <xacro:property name="zed_height" value="0.03" />
+  <xacro:property name="zed_xoff" value="0" />
+  <xacro:property name="zed_zoff" value="0.3048" />
+  <xacro:property name="zed_mass" value="0.02" />
+
   <!-- Add chassis and it's inertia link -->
 
   <link name="base_link" />
@@ -18,7 +85,10 @@
   </link>
 
   <joint name="base_link_joint" type="fixed">
-    <origin xyz="0 0 0.05" rpy="0 0 0" />
+    <origin
+      xyz="${baseLink_xoff} ${baseLink_yoff} ${baseLink_zoff}"
+      rpy="0 0 0"
+    />
     <parent link="base_link" />
     <child link="chassis" />
   </joint>
@@ -30,7 +100,10 @@
   </link>
 
   <joint name="chassis_inertia_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <origin
+      xyz="${chassisInertia_xoff} ${chassisInertia_yoff} ${chassisInertia_zoff}"
+      rpy="0 0 0"
+    />
     <parent link="chassis" />
     <child link="chassis_inertia" />
   </joint>
@@ -51,7 +124,7 @@
   </link>
 
   <joint name="left_rear_wheel_joint" type="continuous">
-    <origin xyz="0 0.1 0" rpy="1.5708 0 0" />
+    <origin xyz="${lRear_xoff} ${lRear_yoff} ${lRear_zoff}" rpy="1.5708 0 0" />
     <parent link="chassis" />
     <child link="left_rear_wheel" />
     <axis xyz="0 0 -1" />
@@ -76,7 +149,7 @@
   </link>
 
   <joint name="right_rear_wheel_joint" type="continuous">
-    <origin xyz="0 -0.1 0" rpy="1.5708 0 0" />
+    <origin xyz="${rRear_xoff} ${rRear_yoff} ${rRear_zoff}" rpy="1.5708 0 0" />
     <parent link="chassis" />
     <child link="right_rear_wheel" />
     <axis xyz="0 0 -1" />
@@ -98,7 +171,10 @@
   </link>
 
   <joint name="left_steering_hinge_joint" type="revolute">
-    <origin xyz="0.325 0.1 0" rpy="0 1.5708 0" />
+    <origin
+      xyz="${lSteerHinge_xoff} ${lSteerHinge_yoff} ${lSteerHinge_zoff}"
+      rpy="0 1.5708 0"
+    />
     <parent link="chassis" />
     <child link="left_steering_hinge" />
     <axis xyz="-1 0 0" />
@@ -120,7 +196,10 @@
   </link>
 
   <joint name="right_steering_hinge_joint" type="continuous">
-    <origin xyz="0.325 -0.1 0" rpy="0 1.5708 0" />
+    <origin
+      xyz="${rSteerHinge_xoff} ${rSteerHinge_yoff} ${rSteerHinge_zoff}"
+      rpy="0 1.5708 0"
+    />
     <parent link="chassis" />
     <child link="right_steering_hinge" />
     <axis xyz="-1 0 0" />
@@ -145,7 +224,10 @@
   </link>
 
   <joint name="left_front_wheel_joint" type="continuous">
-    <origin xyz="0 0 0" rpy="1.5708 0 0" />
+    <origin
+      xyz="${lfront_xoff} ${lfront_yoff} ${lfront_zoff}"
+      rpy="1.5708 0 0"
+    />
     <parent link="left_steering_hinge" />
     <child link="left_front_wheel" />
     <axis xyz="0 0 -1" />
@@ -170,7 +252,10 @@
   </link>
 
   <joint name="right_front_wheel_joint" type="continuous">
-    <origin xyz="0 0 0" rpy="1.5708 0 0" />
+    <origin
+      xyz="${rfront_xoff} ${rfront_yoff} ${rfront_zoff}"
+      rpy="1.5708 0 0"
+    />
     <parent link="right_steering_hinge" />
     <child link="right_front_wheel" />
     <axis xyz="0 0 -1" />
@@ -192,32 +277,32 @@
     samples="440"
     gpu="false"
   >
-  <origin xyz="0.265 0.0 0.075" rpy="0 0 0" />
+  <origin xyz="${lidar_xoff} 0 ${lidar_zoff}" rpy="0 0 0" />
   </xacro:VLP-16>
 
   <!-- zed camera -->
   <link name="zed_camera_link">
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <geometry>
-        <box size="0.033 0.175 0.030" />
+        <box size="${zed_length} ${zed_width} ${zed_height}" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <geometry>
-        <box size="0.033 0.175 0.030" />
+        <box size="${zed_length} ${zed_width} ${zed_height}" />
       </geometry>
       <material name="red" />
     </visual>
   </link>
 
-  <joint name="zed_camera_joint" type="fixed">
+  <joint name="zed_camera_joint" type="continuous">
     <origin xyz="0.390 0 0.04" rpy="0 0 0" />
     <parent link="chassis" />
     <child link="zed_camera_link" />
@@ -233,39 +318,39 @@
   ><!-- this needs to match the name in zed_wrapper/zed_tf.launch -->
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
   <link name="zed_camera_right_link">
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
   <link name="zed_camera_center">
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
 
   <joint name="zed_camera_left_joint" type="fixed">
-    <origin xyz="0 0.06 0" rpy="0 0 0" />
+    <origin xyz="${zed_xoff} 0.06 ${zed_zoff}" rpy="0 0 0" />
     <parent link="zed_camera_link" />
     <child link="camera_link" />
     <axis xyz="0 0 1" />
   </joint>
   <joint name="zed_camera_right_joint" type="fixed">
-    <origin xyz="0 -0.06 0" rpy="0 0 0" />
+    <origin xyz="${zed_xoff} -0.06 ${zed_zoff}" rpy="0 0 0" />
     <parent link="zed_camera_link" />
     <child link="zed_camera_right_link" />
     <axis xyz="0 0 1" />
   </joint>
   <joint name="zed_camera_center_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
+    <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
     <parent link="zed_camera_link" />
     <child link="zed_camera_center" />
     <axis xyz="0 0 1" />
