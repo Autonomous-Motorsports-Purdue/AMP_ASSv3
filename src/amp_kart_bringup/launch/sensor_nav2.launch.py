@@ -17,6 +17,7 @@ from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
 from nav2_common.launch import ReplaceString
 
+
 def generate_launch_description():
 
     #maybe change bringup_share_dir name to bringup_dir
@@ -43,10 +44,11 @@ def generate_launch_description():
         'use_sim_time',
         default_value='false',
         description='Use simulation (Gazebo) clock if true')
-    
+
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(bringup_share_dir, 'params', 'nav2.params.yaml'),
+        default_value=os.path.join(bringup_share_dir, 'params',
+                                   'nav2.params.yaml'),
         description=
         'Full path to the ROS2 parameters file to use for all launched nodes')
 
@@ -82,9 +84,8 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 os.path.join(zed_wrapper_share_dir, 'launch',
                              'zed.launch.py'))),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(launch_dir, 'navigation.launch.py')),
+        IncludeLaunchDescription(PythonLaunchDescriptionSource(
+            os.path.join(launch_dir, 'navigation.launch.py')),
                                  launch_arguments={
                                      'namespace': namespace,
                                      'use_sim_time': use_sim_time,
@@ -129,7 +130,7 @@ def generate_launch_description():
         default_value=os.path.join(bringup_share_dir, 'rviz',
                                    'nav2_default_view.rviz.yaml'),
         description='Full path to the RVIZ config file to use')
-    
+
     #for launching rviz
 
     start_rviz_cmd = Node(condition=UnlessCondition(use_namespace),
