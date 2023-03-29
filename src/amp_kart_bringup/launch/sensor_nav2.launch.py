@@ -18,6 +18,7 @@ from launch.events import Shutdown
 from nav2_common.launch import ReplaceString
 
 def generate_launch_description():
+
     #maybe change bringup_share_dir name to bringup_dir
     #to be consistent with bringup file
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
@@ -95,6 +96,11 @@ def generate_launch_description():
                                      'map_subscribe_transient_local': 'true'
                                  }.items()),
     ])
+
+    #for rviz, there's probably a way to use the rviz launch file
+    #and make this much shorter but im not sure how to do that
+    #so I copied the entire thing into this launch file.
+
     #create rviz2 launch configuration variables
     #not sure if changing namespace to rviz_namespace works
     rviz_namespace = LaunchConfiguration('rviz_namespace')
@@ -105,7 +111,7 @@ def generate_launch_description():
     #for rviz namespace, depending on if default_value matters
     #can remove and use the same namespace for nav2
     #right now, I change namespace to rviz_namespace
-    #added comments to namespaces later on, idk if we have to change them
+    #added comments to namespaces later on, might have to change them
     declare_rviz_namespace_cmd = DeclareLaunchArgument(
         'rviz_namespace',
         default_value='navigation',
@@ -167,7 +173,7 @@ def generate_launch_description():
     ld = LaunchDescription()
     #add action for robot state publisher node
     ld.add_action(robot_state_publisher_node)
-    
+
     #add action for nav2 launch arguments
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_sim_time_cmd)
