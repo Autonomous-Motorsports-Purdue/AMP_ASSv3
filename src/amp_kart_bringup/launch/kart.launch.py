@@ -3,7 +3,8 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import (GroupAction, IncludeLaunchDescription)
+from launch.actions import (DeclareLaunchArgument, GroupAction,
+                            IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.actions import Node
@@ -17,6 +18,13 @@ def generate_launch_description():
     zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
     share_path = get_package_share_directory('amp_kart_description')
     model_path = os.path.join(share_path, 'urdf', 'racecar.xacro')
+
+    micro_ros_agent_node = Node(
+        package='micro_ros_agent',
+        executable='micro_ros_agent',
+        name='micro_ros_agent',
+        arguments=['serial', '--dev',
+                   LaunchConfiguration('serial_tty')])
 
     robot_description = ParameterValue(xacro.process_file(
         str(model_path)).toprettyxml(indent='  '),
@@ -41,6 +49,12 @@ def generate_launch_description():
 
     ld = LaunchDescription()
 
+    ld.add_action(
+        DeclareLaunchArgument(name='seria_tty',
+                              default_value='/dev/ttyUSB0',
+                              description='Serial TTY absolute file location'))
+
+    ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(sensor_launch_group)
 
