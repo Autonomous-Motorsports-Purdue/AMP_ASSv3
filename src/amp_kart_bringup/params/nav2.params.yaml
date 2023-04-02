@@ -149,27 +149,47 @@ local_costmap:
       height: 3
       resolution: 0.05
       robot_radius: 0.22
-      plugins: ["voxel_layer", "inflation_layer"]
+      plugins: ["stvl_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         inflation_radius: 0.55
-      voxel_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
-        publish_voxel_map: True
-        origin_z: 0.0
-        z_resolution: 0.05
-        z_voxels: 16
-        max_obstacle_height: 2.0
-        mark_threshold: 0
-        observation_sources: scan
-        scan:
-          topic: /scan
+      stvl_layer:
+        plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+        enabled: true
+        voxel_decay: 15.0 # seconds if linear, e^n if exponential
+        decay_model: 0 # 0=linear, 1=exponential, -1=persistent
+        voxel_size: 0.05 # meters
+        track_unknown_space: true # default space is known
+        mark_threshold: 0 # voxel height
+        update_footprint_enabled: true
+        combination_method: 1 # 1=max, 0=override
+        origin_z: 0.0 # meters
+        publish_voxel_map: false # default off
+        transform_tolerance: 0.2 # seconds
+        mapping_mode: false # default off, saves map not for navigation
+        map_save_duration: 60.0 # default 60s, how often to autosave
+        observation_sources: zed_camera
+        zed_camera:
+          datatype: PointCloud2
+          topic: TODO
+          marking: true
+          clearing: true
+          obstacle_range: 3.0
+          min_obstacle_height: 0.0
           max_obstacle_height: 2.0
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
+          expected_update_rate: 0.0
+          observation_persistence: 0.0
+          inf_is_valid: false
+          filter: "voxel"
+          voxel_min_points: 0
+          clear_after_reading: true
+          max_z: 7.0
+          min_z: 0.1
+          vertical_fov_angle: 0.94
+          horizontal_fov_angle: 1.48
+          decay_acceleration: 15.0
+          model_type: 0
       static_layer:
         map_subscribe_transient_local: True
       always_send_full_costmap: True
@@ -193,17 +213,49 @@ global_costmap:
       height: 100
       resolution: 0.05
       track_unknown_space: true
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
-      obstacle_layer:
-        plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: True
-        observation_sources: scan
-        scan:
-          topic: /scan
-          max_obstacle_height: 2.0
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
+      plugins: ["static_layer", "stvl_layer", "inflation_layer"]
+      stvl_layer:
+        plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+        enabled: true
+        voxel_decay: 15.0 # seconds if linear, e^n if exponential
+        decay_model: 0 # 0=linear, 1=exponential, -1=persistent
+        voxel_size: 0.05 # meters
+        track_unknown_space: true # default space is known
+        mark_threshold: 0 # voxel height
+        update_footprint_enabled: true
+        combination_method: 1 # 1=max, 0=override
+        origin_z: 0.0 # meters
+        publish_voxel_map: false # default off
+        transform_tolerance: 0.2 # seconds
+        mapping_mode: false # default off, saves map not for navigation
+        map_save_duration: 60.0 # default 60s, how often to autosave
+        observation_sources: vlp16_mark vlp16_clear
+        vlp16_mark:
+          data_type: PointCloud2
+          topic: /velodyne_points
+          marking: true
+          clearing: false
+          obstacle_range: 3.0 # meters
+          min_obstacle_height: 0.3 # default 0, meters
+          max_obstacle_height: 2.0 # default 3, meters
+          expected_update_rate: 0.0 # default 0, if not updating at this rate at least, remove from buffer
+          observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+          inf_is_valid: false # default false, for laser scans
+          filter: "voxel" # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on     voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+          clear_after_reading: true # default false, clear the buffer after the layer gets readings from it
+        vlp16_clear:
+          enabled: true #default true, can be toggled on/off with associated service call
+          data_type: PointCloud2
+          topic: /velodyne_points
+          marking: false
+          clearing: true
+          max_z: 8.0 # default 0, meters
+          min_z: 1.0 # default 10, meters
+          vertical_fov_angle: 0.523 # default 0.7, radians. For 3D lidars it's the symmetric FOV about the planar axis.
+          vertical_fov_padding: 0.05 # 3D Lidar only. Default 0, in meters
+          horizontal_fov_angle: 6.29 # 3D lidar scanners like the VLP16 have 360 deg horizontal FOV.
+          decay_acceleration: 5.0 # default 0, 1/s^2.
+          model_type: 1 # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
