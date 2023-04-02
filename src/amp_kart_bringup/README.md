@@ -6,6 +6,7 @@ Contains files needed to start the kart.
 
 - `launch/`
   - `bringup.launch.py` _Start the high-level navigation software stack_
+  - `kart.launch.py` _Start sensors and micro ros_
   - `localization.launch.py` _Initialize map_server and amcl_
   - `navigation.launch.py` _Initialize Nav2_
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
