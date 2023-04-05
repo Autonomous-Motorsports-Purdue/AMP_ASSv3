@@ -6,6 +6,7 @@ from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -50,7 +51,7 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     ld.add_action(
-        DeclareLaunchArgument(name='seria_tty',
+        DeclareLaunchArgument(name='serial_tty',
                               default_value='/dev/ttyUSB0',
                               description='Serial TTY absolute file location'))
 
