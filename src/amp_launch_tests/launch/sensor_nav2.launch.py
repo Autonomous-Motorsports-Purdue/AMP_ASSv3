@@ -15,6 +15,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch_ros.actions import PushRosNamespace
 
+
 def generate_launch_description():
     #test_dir is used for the modified kart file in launch_tests
     test_dir = get_package_share_directory('amp_launch_tests')
@@ -27,11 +28,11 @@ def generate_launch_description():
     #argument for robot state publisher node in kart file
     robot_description = LaunchConfiguration('robot_description')
     declare_robot_description_cmd = DeclareLaunchArgument(
-            'robot_description',
-            default_value = ParameterValue(xacro.process_file(
+        'robot_description',
+        default_value=ParameterValue(xacro.process_file(
             str(model_path)).toprettyxml(indent='  '),
-                                       value_type=str),
-            description = 'Argument for robot description in kart file')
+                                     value_type=str),
+        description='Argument for robot description in kart file')
     #nav2 arguments
     namespace = LaunchConfiguration('namespace')
     use_namespace = LaunchConfiguration('use_namespace')
@@ -46,7 +47,7 @@ def generate_launch_description():
         'use_namespace',
         default_value='false',
         description='Whether to apply a namespace to the navigation stack')
-    
+
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false',
@@ -67,15 +68,12 @@ def generate_launch_description():
             get_package_share_directory('nav2_bt_navigator'), 'behavior_trees',
             'navigate_w_replanning_and_recovery.xml'),
         description='Full path to the behavior tree xml file to use')
-    bringup_cmd_group = GroupAction ([
+    bringup_cmd_group = GroupAction([
         #launch kart file, which has sensors and robot state publisher node
-        
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(test_launch_dir, 'kart.launch.py')),
-            launch_arguments = {
-                'robot_description': robot_description
-            }.items()
-        ),
+            PythonLaunchDescriptionSource(
+                os.path.join(test_launch_dir, 'kart.launch.py')),
+            launch_arguments={'robot_description': robot_description}.items()),
         PushRosNamespace(condition=IfCondition(use_namespace),
                          namespace=namespace),
         IncludeLaunchDescription(PythonLaunchDescriptionSource(
@@ -90,8 +88,9 @@ def generate_launch_description():
                                      'use_lifecycle_mgr': 'false',
                                      'map_subscribe_transient_local': 'true'
                                  }.items()),
-        IncludeLaunchDescription(PythonLaunchDescriptionSource(
-            os.path.join(test_launch_dir, 'rviz.launch.py')))
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(test_launch_dir, 'rviz.launch.py')))
     ])
     ld = LaunchDescription()
     #declare robot description arg

@@ -16,7 +16,7 @@ def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
     zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
     share_path = get_package_share_directory('amp_kart_description')
-    
+
     #changed to come from the calling bringup file
     robot_description = LaunchConfiguration('robot_description')
 
