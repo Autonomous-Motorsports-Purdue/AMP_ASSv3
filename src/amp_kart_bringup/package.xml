@@ -17,6 +17,7 @@
   <exec_depend>velodyne_driver</exec_depend>
   <exec_depend>velodyne_msgs</exec_depend>
   <exec_depend>velodyne_pointcloud</exec_depend>
+  <exec_depend>spatio_temporal_voxel_layer</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
