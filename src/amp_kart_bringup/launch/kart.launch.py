@@ -17,8 +17,9 @@ import xacro
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
     zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
-    share_path = get_package_share_directory('amp_kart_description')
-    model_path = os.path.join(share_path, 'urdf', 'racecar.xacro')
+    description_share_path = get_package_share_directory(
+        'amp_kart_description')
+    model_path = os.path.join(description_share_path, 'urdf', 'racecar.xacro')
 
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
