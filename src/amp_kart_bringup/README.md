@@ -4,6 +4,8 @@ Contains files needed to start the kart.
 
 ## Directory Tree
 
+- `config/`
+  - `xbox.config.yaml` _config file for teleop twist joy node_
 - `launch/`
   - `bringup.launch.py` _Start the high-level navigation software stack_
   - `kart.launch.py` _Start sensors and micro ros_
