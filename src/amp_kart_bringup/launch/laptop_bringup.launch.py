@@ -38,8 +38,7 @@ def generate_launch_description():
                                         }.items())
 
     teleop_cmd = IncludeLaunchDescription(PythonLaunchDescriptionSource(
-        os.path.join(get_package_share_directory('teleop_twist_joy'), 'launch',
-                     'teleop-launch.py')),
+        os.path.join(share_dir, 'launch', 'teleop.launch.py')),
                                           launch_arguments={
                                               'config_filepath':
                                               os.path.join(
