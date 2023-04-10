@@ -37,15 +37,15 @@ def generate_launch_description():
                                             'rviz_config': rviz_config_file
                                         }.items())
 
-    teleop_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_path('teleop_twist_joy'), 'launch',
-                         'teleop-launch.py')),
-        launch_arguments={
-            'config_filepath':
-            os.path.join(get_package_share_path('amp_launch_tests'), 'config',
-                         'xbox.config.yaml')
-        }.items())
+    teleop_cmd = IncludeLaunchDescription(PythonLaunchDescriptionSource(
+        os.path.join(get_package_share_directory('teleop_twist_joy'), 'launch',
+                     'teleop-launch.py')),
+                                          launch_arguments={
+                                              'config_filepath':
+                                              os.path.join(
+                                                  share_dir, 'config',
+                                                  'xbox.config.yaml')
+                                          }.items())
 
     ld = LaunchDescription()
 
