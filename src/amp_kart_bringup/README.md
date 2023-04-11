@@ -15,6 +15,8 @@ Contains files needed to start the kart.
   - `navigation.launch.py` _Initialize Nav2_
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
   - `slam.launch.py` _Initialize map_server and slam_toolbox_
+  - `teleop.launch.py` _Launch joy teleop nodes_
+  - `twist_mux.launch.py` _Launch both twist muxex_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
 - `map/`
   - `empty_map.yaml` _Default empty map_
@@ -22,5 +24,7 @@ Contains files needed to start the kart.
   - `VLP16.params.yaml` _VLP16 parameters_
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
+  - `twist_mux_1.params.yaml`
+  - `twist_mux_2.params.yaml`
 - `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_
