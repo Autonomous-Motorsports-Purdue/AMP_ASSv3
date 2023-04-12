@@ -2,6 +2,38 @@
 
 Contains files needed to start the kart.
 
+## Mux structure
+
+The muxes used are [`twist_mux`](http://wiki.ros.org/twist_mux).
+They are laid out as can be seen below.
+
+```
+                   /joy_disable      /joy_enable
+                  |                 |
+                  |                 |   /stop
+                 ____               |  |
+                |    |  /mux1_vel   ____
+   /joy_vel ____|    |_____________|    |
+                |    |             |    |
+                |____|             |    |____ /cmd_vel
+                 mux1              |    |
+                       /nav_vel ___|    |
+                                   |____|
+                                    mux2
+```
+
+Priorities for the muxes are listed below, as well as the corresponding topic
+and (expected) topic publishers:
+
+- `mux1` &rarr; `/mux1_vel`
+  - `joy_disable` ~ `kart_commander`: 150
+  - `joy_vel` ~ `teleop_twist_joy_node`: 100
+- `mux2` &rarr; `/cmd_vel`
+  - `stop` ~ `kart_commander`: 255
+  - `joy_enable` ~ `kart_commander`: 50
+  - `nav_vel` ~ `nav2`: 10
+  - `mux1_vel` ~ `mux1`: 100
+
 ## Directory Tree
 
 - `config/`
