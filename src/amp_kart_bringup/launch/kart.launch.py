@@ -6,6 +6,7 @@ from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -16,8 +17,9 @@ import xacro
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
     zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
-    share_path = get_package_share_directory('amp_kart_description')
-    model_path = os.path.join(share_path, 'urdf', 'racecar.xacro')
+    description_share_path = get_package_share_directory(
+        'amp_kart_description')
+    model_path = os.path.join(description_share_path, 'urdf', 'racecar.xacro')
 
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
@@ -50,7 +52,7 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     ld.add_action(
-        DeclareLaunchArgument(name='seria_tty',
+        DeclareLaunchArgument(name='serial_tty',
                               default_value='/dev/ttyUSB0',
                               description='Serial TTY absolute file location'))
 

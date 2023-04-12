@@ -52,11 +52,13 @@ def generate_launch_description():
         description='Whether to apply a namespace to the navigation stack')
 
     declare_slam_cmd = DeclareLaunchArgument('slam',
-                                             default_value='False',
+                                             default_value='True',
                                              description='Whether run a SLAM')
 
     declare_map_yaml_cmd = DeclareLaunchArgument(
-        'map', description='Full path to map yaml file to load')
+        'map',
+        default_value=os.path.join(share_dir, 'map', 'empty_map.yaml'),
+        description='Full path to map yaml file to load')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         'use_sim_time',
