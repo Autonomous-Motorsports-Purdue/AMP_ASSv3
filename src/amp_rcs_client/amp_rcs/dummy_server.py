@@ -6,23 +6,28 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
+
 class ServiceServer(Node):
-	def __init__(self):
-		super().__init__('service_server')
-		self.server = self.create_service(TrackState, 'track_state', self.track_state_callback)
-	
-	def track_state_callback(self, request, response):
-		response.state = request.state
-		self.get_logger().info('Recieved: %s' % (request.state))
-		self.get_logger().info('Response: %s\n' % (response.state))
-		
-		return response
+
+    def __init__(self):
+        super().__init__('service_server')
+        self.server = self.create_service(TrackState, 'track_state',
+                                          self.track_state_callback)
+
+    def track_state_callback(self, request, response):
+        response.state = request.state
+        self.get_logger().info('Recieved: %s' % (request.state))
+        self.get_logger().info('Response: %s\n' % (response.state))
+
+        return response
+
 
 def main(args=None):
-	rclpy.init(args=args)
-	node = ServiceServer()
-	rclpy.spin(node)
-	rclpy.shutdown()
-	
+    rclpy.init(args=args)
+    node = ServiceServer()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+
 if __name__ == 'main':
-	main()
+    main()
