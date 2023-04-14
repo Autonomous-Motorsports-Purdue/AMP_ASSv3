@@ -21,8 +21,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "amp_rcs_client = amp_rcs_client.service_client:main",
-            "amp_rcs_server = amp_rcs_server.dummy_server:main"
+            "amp_rcs_client = amp_rcs.service_client:main",
+            "amp_rcs_server = amp_rcs.dummy_server:main"
         ],
     },
 )
