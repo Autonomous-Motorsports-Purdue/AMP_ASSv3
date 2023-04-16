@@ -4,35 +4,37 @@ Contains files needed to start the kart.
 
 ## Mux structure
 
-The muxes used are [`twist_mux`](http://wiki.ros.org/twist_mux).
-They are laid out as can be seen below.
+There are two control sources that all produce `twist_mux` messages to "cmd_vel": joy_vel (teleop controller) and nav_vel (autnomous navigation).
+The RCS provides some track states (safe stop, estop, teleop, auto) that control which input we select. It's important that the states can override each other in this priority:
+
+- ESTOP/SAFE STOP
+- TELEOP
+- AUTO
+
+The priorities are implemented with a [`twist_mux`](http://wiki.ros.org/twist_mux).
+and laid out as can be seen below.
 
 ```
-                   /joy_disable      /joy_enable
-                  |                 |
-                  |                 |   /stop
-                 ____               |  |
-                |    |  /mux1_vel   ____
-   /joy_vel ____|    |_____________|    |
-                |    |             |    |
-                |____|             |    |____ /cmd_vel
-                 mux1              |    |
-                       /nav_vel ___|    |
-                                   |____|
-                                    mux2
+
+
+                          /joy_only   /stop (255)
+                                    \   /
+                                     | |
+                                    _|_|_
+                       /joy_vel____|     |
+                                   |     |____ /cmd_vel
+                                   |     |
+                       /nav_vel ___|     |
+                                   |_____|
+
 ```
 
-Priorities for the muxes are listed below, as well as the corresponding topic
-and (expected) topic publishers:
+Priorities for each topic and lock are listed, as well as the expected topic publishers:
 
-- `mux1` &rarr; `/mux1_vel`
-  - `joy_disable` ~ `kart_commander`: 150
-  - `joy_vel` ~ `teleop_twist_joy_node`: 100
-- `mux2` &rarr; `/cmd_vel`
-  - `stop` ~ `kart_commander`: 255
-  - `joy_enable` ~ `kart_commander`: 50
-  - `nav_vel` ~ `nav2`: 10
-  - `mux1_vel` ~ `mux1`: 100
+- `stop` ~ `kart_commander`: 255
+- `joy_vel` ~ `teleop_twist_joy_node`: 50
+- `joy_only_publisher` ~ `kart_commander`: 50
+- `nav_vel` ~ `nav2`: 10
 
 ## Directory Tree
 
@@ -48,7 +50,7 @@ and (expected) topic publishers:
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
   - `slam.launch.py` _Initialize map_server and slam_toolbox_
   - `teleop.launch.py` _Launch joy teleop nodes_
-  - `twist_mux.launch.py` _Launch both twist muxex_
+  - `twist_mux.launch.py` _Launch both twist muxex and kart_commander_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
 - `map/`
   - `empty_map.yaml` _Default empty map_
@@ -56,7 +58,6 @@ and (expected) topic publishers:
   - `VLP16.params.yaml` _VLP16 parameters_
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
-  - `twist_mux_1.params.yaml`
-  - `twist_mux_2.params.yaml`
+  - `twist_mux.params.yaml`
 - `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_

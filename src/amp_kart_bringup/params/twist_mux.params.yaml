@@ -1,0 +1,23 @@
+twist_mux:
+  ros__parameters:
+    # Make sure the locks and corresponding locked topics have the same priority
+    # When the kart_commander has not explicitly disallowed auto,
+    # this config allows for teleop and auto to happen simultaneously (in alternating periods of 0.5s)
+    locks:
+      joy_enable:
+        topic: joy_enable
+        timeout: 0.0
+        priority: 50
+      stop:
+        topic: stop
+        timeout: 0.0
+        priority: 255
+    topics:
+      joy_vel:
+        topic: joy_vel
+        timeout: 0.5
+        priority: 50
+      navigation:
+        topic: nav_vel
+        timeout: 0.5
+        priority: 10
