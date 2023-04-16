@@ -6,7 +6,7 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Bool
 
-from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, HistoryPolicy, DurabilityPolicy, ReliabilityPolicy
+from rclpy.qos import QoSProfile, HistoryPolicy, DurabilityPolicy, ReliabilityPolicy
 
 # Create high-reliability QoS for mux toggling
 qos_profile = QoSProfile(
@@ -33,8 +33,10 @@ class ServiceServer(Node):
     def track_state_callback(self, request, response):
         response.state = request.state
 
-        self.get_logger().info('Recieved: %s' % (request.state))
-        self.get_logger().info('Response: %s\n' % (response.state))
+        self.get_logger().info('Recieved: %s Response: %s' %
+                               (request.state, response.state))
+
+        # self.get_logger().info('eeee' + str(dir(TrackState.Request)))
 
         # TODO More complex states in TrackState.srv have transition rules not yet implemented
 
@@ -42,19 +44,19 @@ class ServiceServer(Node):
         # can coexist.
         # Note that while you can reach Stop from any other state, returning to
         # Autonomus from Stop is not allowed; switch to RC first.
-        if response.state == response.ESTOP or response.state == response.SAFESTOP:
-            self.stop_publisher.publish(True)
+        if response.state == TrackState.Request.EMERGENCY or response.state == TrackState.Request.SAFESTOP:
+            self.stop_publisher.publish(Bool(data=True))
             self.get_logger().info('STOP: nav2 and teleop disabled')
-        if response.state == response.RC or response.state == response.RACEDONE:
-            self.joy_only_publisher.publish(True)
+        if response.state == TrackState.Request.RC or response.state == TrackState.Request.RACEDONE:
+            self.joy_only_publisher.publish(Bool(data=True))
             self.get_logger().info('RC: nav2 disabled')
-            self.stop_publisher.publish(False)
+            self.stop_publisher.publish(Bool(data=False))
             self.get_logger().info('RC: STOP mode restrictions lifted')
-        if response.state == response.AUTONOMOUS_SLOW or response.state == response.AUTONOMOUS_OVERTAKE:
-            self.joy_only_publisher.publish(False)
+        if response.state == TrackState.Request.AUTONOMOUS_SLOW or response.state == TrackState.Request.AUTONOMOUS_OVERTAKE:
+            self.joy_only_publisher.publish(Bool(data=False))
             self.get_logger().info(
-                'AUTO: allow both nav2 and teleop controls. Switching directly from'
-                'ESTOP/SAFESTOP to this state is not allowed. Switch to RC first'
+                'AUTO: allow both nav2 and teleop controls. Switching directly from '
+                'ESTOP/SAFESTOP to this state will not disable STOP. Switch to RC first'
             )
 
         return response
