@@ -1,6 +1,7 @@
 """ROS2 service client for state based service calling."""
 
-from rcs_service.srv import TrackState
+#usr/bin/env python3
+from amp_msgs.srv import TrackState
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
