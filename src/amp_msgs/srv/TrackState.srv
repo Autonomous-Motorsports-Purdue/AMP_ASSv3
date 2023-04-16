@@ -1,3 +1,19 @@
 string state
+
+# Track State constants (Received from server)
+# TODO set the values to the actual RCS strings
+string EMERGENCY="black"
+string SAFESTOP="red"
+string RACEDONE="checkered"
+string RC="orange"
+string AUTONOMOUS_SLOW="yellow"
+string AUTONOMOUS_OVERTAKE="green"
 ---
 string state
+
+# Kart State constants (Sent back to server)
+string EMERGENCY="todo1"
+string STOPPED="todo2"
+string RC="todo3"
+string READY="todo4"
+string AUTONOMOUS="todo5"
