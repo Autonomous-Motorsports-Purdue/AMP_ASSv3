@@ -13,7 +13,7 @@ import xacro
 
 def generate_launch_description():
     share_path = get_package_share_path('amp_kart_description')
-    model_path = share_path / 'urdf' / 'kart.urdf'
+    model_path = share_path / 'urdf' / 'racecar.xacro'
     default_rviz_config_path = share_path / 'rviz' / 'urdf.rviz.yaml'
 
     gui_arg = DeclareLaunchArgument(

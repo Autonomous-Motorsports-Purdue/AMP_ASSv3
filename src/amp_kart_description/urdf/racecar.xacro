@@ -61,13 +61,13 @@
   <xacro:property name="rfront_zoff" value="0" />
 
   <xacro:property name="lidar_xoff" value="1.2192" />
-  <xacro:property name="lidar_zoff" value="0.4826" />
+  <xacro:property name="lidar_zoff" value="0.508" />
 
   <xacro:property name="zed_width" value="0.175" />
   <xacro:property name="zed_length" value="0.033" />
   <xacro:property name="zed_height" value="0.03" />
   <xacro:property name="zed_xoff" value="1.27" />
-  <xacro:property name="zed_zoff" value="0.4064" />
+  <xacro:property name="zed_zoff" value="0.381" />
   <xacro:property name="zed_mass" value="0.02" />
 
   <!-- Add chassis and it's inertia link -->
@@ -284,17 +284,17 @@
   <link name="zed_camera_link">
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
     <collision>
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <box size="${zed_length} ${zed_width} ${zed_height}" />
       </geometry>
     </collision>
     <visual>
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
         <box size="${zed_length} ${zed_width} ${zed_height}" />
       </geometry>
@@ -304,7 +304,7 @@
 
   <joint name="zed_camera_joint" type="continuous">
     <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="chassis" />
+    <parent link="zed_camera_center" />
     <child link="zed_camera_link" />
     <axis xyz="0 0 1" />
     <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0" /> -->
@@ -312,46 +312,17 @@
 
 
   <!-- zed camera lenses -->
-  <!-- It seems these have to have a non-zero mass to have a camera attached? -->
-  <link
-    name="camera_link"
-  ><!-- this needs to match the name in zed_wrapper/zed_tf.launch -->
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-  <link name="zed_camera_right_link">
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
   <link name="zed_camera_center">
     <inertial>
       <mass value="1e-5" />
-      <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
 
-  <joint name="zed_camera_left_joint" type="fixed">
-    <origin xyz="${zed_xoff} 0.06 ${zed_zoff}" rpy="0 0 0" />
-    <parent link="zed_camera_link" />
-    <child link="camera_link" />
-    <axis xyz="0 0 1" />
-  </joint>
-  <joint name="zed_camera_right_joint" type="fixed">
-    <origin xyz="${zed_xoff} -0.06 ${zed_zoff}" rpy="0 0 0" />
-    <parent link="zed_camera_link" />
-    <child link="zed_camera_right_link" />
-    <axis xyz="0 0 1" />
-  </joint>
   <joint name="zed_camera_center_joint" type="fixed">
     <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
-    <parent link="zed_camera_link" />
+    <parent link="base_link" />
     <child link="zed_camera_center" />
     <axis xyz="0 0 1" />
   </joint>
