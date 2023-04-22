@@ -1,0 +1,20 @@
+twist_mux:
+  ros__parameters:
+    locks:
+      stop:
+        topic: stop
+        timeout: 0.0
+        priority: 255
+      joy_enable:
+        topic: joy_enable
+        timeout: 0.0
+        priority: 50
+    topics:
+      navigation:
+        topic: nav_vel
+        timeout: 0.5
+        priority: 10
+      mux1:
+        topic: mux1_vel
+        timeout: 0.5
+        priority: 100
