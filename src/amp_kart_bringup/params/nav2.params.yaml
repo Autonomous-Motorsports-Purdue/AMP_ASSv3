@@ -161,17 +161,17 @@ local_costmap:
   local_costmap:
     ros__parameters:
       always_send_full_costmap: False
-      footprint_padding: 0.10
+      footprint_padding: 0.05
       footprint: "[[-0.3556, 0.7112], [-0.3556, -0.7112], [1.6256, -0.7112], [1.6256, 0.7112]]"
       global_frame: odom
-      height: 10
-      width: 10
+      height: 30
+      width: 30
       lethal_cost_threshold: 100
       map_topic: map
       publish_frequency: 2.0
-      resolution: 0.05
+      resolution: 0.1
       robot_base_frame: base_link
-      rolling_window: true
+      rolling_window: True
       track_unknown_space: false
       transform_tolerance: 0.3
       update_frequency: 5.0
@@ -189,7 +189,6 @@ local_costmap:
         decay_model: 0
         voxel_size: 0.05
         track_unknown_space: true
-        max_obstacle_height: 2.0
         unknown_threshold: 15
         mark_threshold: 0
         update_footprint_enabled: true
@@ -199,27 +198,34 @@ local_costmap:
         transform_tolerance: 0.2
         mapping_mode: false
         map_save_duration: 60.0
-        observation_sources: pointcloud
-        pointcloud:
+        observation_sources: vlp16_mark vlp16_clear
+        vlp16_mark:
           data_type: PointCloud2
           topic: /velodyne_points
           marking: true
-          clearing: true
-          obstacle_range: 3.0
+          clearing: false
+          obstacle_range: 30.0
           min_obstacle_height: 0.0
           max_obstacle_height: 2.0
           expected_update_rate: 0.0
           observation_persistence: 0.0
           inf_is_valid: false
           filter: "voxel"
-          voxel_min_points: 0
           clear_after_reading: true
+        vlp16_clear:
+          enabled: true
+          data_type: PointCloud2
+          topic: /velodyne_points
+          marking: false
+          clearing: true
+          obstacle_range: 30.0
           max_z: 7.0
           min_z: 0.1
-          vertical_fov_angle: 0.8745
-          horizontal_fov_angle: 1.048
-          decay_acceleration: 15.0
-          model_type: 0
+          vertical_fov_angle: 0.523
+          vertical_fov_padding: 0.05
+          horizontal_fov_angle: 6.29
+          decay_acceleration: 5.0
+          model_type: 1
   local_costmap_client:
     ros__parameters:
       use_sim_time: True
