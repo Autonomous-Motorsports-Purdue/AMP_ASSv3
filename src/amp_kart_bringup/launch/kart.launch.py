@@ -16,7 +16,6 @@ import xacro
 
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
-    zed_wrapper_share_dir = get_package_share_directory('zed_wrapper')
     description_share_path = get_package_share_directory(
         'amp_kart_description')
     model_path = os.path.join(description_share_path, 'urdf', 'racecar.xacro')
@@ -45,8 +44,7 @@ def generate_launch_description():
                 os.path.join(bringup_share_dir, 'launch', 'VLP16.launch.py'))),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(zed_wrapper_share_dir, 'launch',
-                             'zed.launch.py'))),
+                os.path.join(bringup_share_dir, 'launch', 'zed.launch.py'))),
     ])
 
     ld = LaunchDescription()
