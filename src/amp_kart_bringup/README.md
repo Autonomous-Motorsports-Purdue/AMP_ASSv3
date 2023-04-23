@@ -5,7 +5,6 @@ Contains files needed to start the kart.
 ## Directory Tree
 
 - `config/`
-  - `common.yaml` _common zed camera config_
   - `xbox.config.yaml` _config file for teleop twist joy node_
 - `launch/`
   - `kart.launch.py` _Start sensors and micro ros_
@@ -17,7 +16,7 @@ Contains files needed to start the kart.
   - `rviz.launch.py` _Initialize RViz with Nav2 configuration_
   - `slam.launch.py` _Initialize map_server and slam_toolbox_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
-  - `zed.launch.py` \_
+  - `zed.launch.py` _Zed camera launch file_
 - `map/`
   - `empty_map.yaml` _Default empty map_
 - `params/`

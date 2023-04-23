@@ -63,13 +63,6 @@
   <xacro:property name="lidar_xoff" value="1.2192" />
   <xacro:property name="lidar_zoff" value="0.508" />
 
-  <xacro:property name="zed_width" value="0.175" />
-  <xacro:property name="zed_length" value="0.033" />
-  <xacro:property name="zed_height" value="0.03" />
-  <xacro:property name="zed_xoff" value="1.27" />
-  <xacro:property name="zed_zoff" value="0.381" />
-  <xacro:property name="zed_mass" value="0.02" />
-
   <!-- Add chassis and it's inertia link -->
 
   <link name="base_link" />
@@ -264,9 +257,8 @@
 
   <xacro:wheel_transmission name="right_front_wheel" />
 
-  <!-- New Lidar Sensor-->
-
-   <xacro:include
+  <!-- VLP-16 -->
+  <xacro:include
     filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"
   />
   <xacro:VLP-16
@@ -279,50 +271,6 @@
   >
   <origin xyz="${lidar_xoff} 0 ${lidar_zoff}" rpy="0 0 0" />
   </xacro:VLP-16>
-
-  <!-- zed camera -->
-  <!-- <link name="zed_camera_link">
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <box size="${zed_length} ${zed_width} ${zed_height}" />
-      </geometry>
-    </collision>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <box size="${zed_length} ${zed_width} ${zed_height}" />
-      </geometry>
-      <material name="red" />
-    </visual>
-  </link>
-
-  <joint name="zed_camera_joint" type="continuous">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="zed_camera_center" />
-    <child link="zed_camera_link" />
-    <axis xyz="0 0 1" />
-  </joint>
-
-  <link name="zed_camera_center">
-    <inertial>
-      <mass value="1e-5" />
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
-    </inertial>
-  </link>
-
-  <joint name="zed_camera_center_joint" type="fixed">
-    <origin xyz="${zed_xoff} 0 ${zed_zoff}" rpy="0 0 0" />
-    <parent link="base_link" />
-    <child link="zed_camera_center" />
-    <axis xyz="0 0 1" />
-  </joint> -->
 
   <!-- Add the remaining xacros -->
   <xacro:include filename="$(find amp_kart_description)/urdf/racecar.gazebo" />
