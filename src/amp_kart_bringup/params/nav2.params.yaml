@@ -273,12 +273,12 @@ global_costmap:
         transform_tolerance: 0.2
         mapping_mode: false
         map_save_duration: 60.0
-        observation_sources: pointcloud
-        pointcloud:
+        observation_sources: vlp16_mark vlp16_clear
+        vlp16_mark:
           data_type: PointCloud2
           topic: /velodyne_points
           marking: true
-          clearing: true
+          clearing: false
           obstacle_range: 100.0
           min_obstacle_height: 0.0
           max_obstacle_height: 2.0
@@ -286,14 +286,21 @@ global_costmap:
           observation_persistence: 0.0
           inf_is_valid: false
           filter: "voxel"
-          voxel_min_points: 0
           clear_after_reading: true
+        vlp16_clear:
+          enabled: true
+          data_type: PointCloud2
+          topic: /velodyne_points
+          marking: false
+          clearing: true
+          obstacle_range: 100.0
           max_z: 7.0
           min_z: 0.1
-          vertical_fov_angle: 0.8745
-          horizontal_fov_angle: 1.048
-          decay_acceleration: 15.0
-          model_type: 0
+          vertical_fov_angle: 0.523
+          vertical_fov_padding: 0.05
+          horizontal_fov_angle: 6.29
+          decay_acceleration: 5.0
+          model_type: 1
   global_costmap_client:
     ros__parameters:
       use_sim_time: True
