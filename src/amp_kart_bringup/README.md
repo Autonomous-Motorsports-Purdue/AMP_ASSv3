@@ -37,7 +37,6 @@ and (expected) topic publishers:
 ## Directory Tree
 
 - `config/`
-  - `common.yaml` _common zed camera config_
   - `xbox.config.yaml` _config file for teleop twist joy node_
 - `launch/`
   - `kart.launch.py` _Start sensors and micro ros_
@@ -51,7 +50,7 @@ and (expected) topic publishers:
   - `teleop.launch.py` _Launch joy teleop nodes_
   - `twist_mux.launch.py` _Launch both twist muxex_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
-  - `zed.launch.py` \_
+  - `zed.launch.py` _Zed camera launch file_
 - `map/`
   - `empty_map.yaml` _Default empty map_
 - `params/`
