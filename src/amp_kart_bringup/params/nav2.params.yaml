@@ -160,12 +160,12 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      always_send_full_costmap: False
+      always_send_full_costmap: True
       footprint_padding: 0.05
       footprint: "[[-0.3556, 0.7112], [-0.3556, -0.7112], [1.6256, -0.7112], [1.6256, 0.7112]]"
       global_frame: odom
-      height: 30
-      width: 30
+      height: 10
+      width: 10
       lethal_cost_threshold: 100
       map_topic: map
       publish_frequency: 2.0
@@ -177,55 +177,18 @@ local_costmap:
       update_frequency: 5.0
       use_maximum: False
       use_sim_time: True
-      plugins: ["stvl_layer", "inflation_layer"]
+      plugins: ["global_static", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         inflation_radius: 0.55
-      stvl_layer:
-        plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+      global_static:
+        plugin: "nav2_costmap_2d::StaticLayer"
         enabled: true
-        voxel_decay: 15.
-        decay_model: 0
-        voxel_size: 0.05
-        track_unknown_space: true
-        unknown_threshold: 15
-        mark_threshold: 0
-        update_footprint_enabled: true
-        combination_method: 1
-        origin_z: 0.0
-        publish_voxel_map: true
-        transform_tolerance: 0.2
-        mapping_mode: false
-        map_save_duration: 60.0
-        observation_sources: vlp16_mark vlp16_clear
-        vlp16_mark:
-          data_type: PointCloud2
-          topic: /velodyne_points
-          marking: true
-          clearing: false
-          obstacle_range: 30.0
-          min_obstacle_height: 0.0
-          max_obstacle_height: 2.0
-          expected_update_rate: 0.0
-          observation_persistence: 0.0
-          inf_is_valid: false
-          filter: "voxel"
-          clear_after_reading: true
-        vlp16_clear:
-          enabled: true
-          data_type: PointCloud2
-          topic: /velodyne_points
-          marking: false
-          clearing: true
-          obstacle_range: 30.0
-          max_z: 7.0
-          min_z: 0.1
-          vertical_fov_angle: 0.523
-          vertical_fov_padding: 0.05
-          horizontal_fov_angle: 6.29
-          decay_acceleration: 5.0
-          model_type: 1
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        transform_tolerance: 0.0
+        map_topic: "/global_costmap/costmap"
   local_costmap_client:
     ros__parameters:
       use_sim_time: True
@@ -252,7 +215,7 @@ global_costmap:
       rolling_window: False
       track_unknown_space: true
       transform_tolerance: 0.3
-      update_frequency: 1.0
+      update_frequency: 5.0
       use_maximum: False
       use_sim_time: True
       plugins: ["static_layer", "stvl_layer", "inflation_layer"]
