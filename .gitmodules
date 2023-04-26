@@ -5,3 +5,6 @@
 	path = src/micro-ros-setup
 	url = https://github.com/micro-ROS/micro_ros_setup.git
 	branch = foxy
+[submodule "src/patchwork-plusplus-ros"]
+	path = src/patchwork-plusplus-ros
+	url = git@github.com:Autonomous-Motorsports-Purdue/patchwork-plusplus-ros.git
