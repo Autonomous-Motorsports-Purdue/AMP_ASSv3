@@ -1,23 +1,21 @@
-from math import sqrt
-from pickletools import uint8
-
-from cv2 import rotate
 import rclpy
 import numpy as np
 from rclpy.node import Node
 from nav2_msgs.msg import Costmap
 from nav_msgs.msg import Odometry
 import cv2
-from geometry_msgs.msg import Quaternion, Point, PoseStamped, PoseWithCovarianceStamped
+from geometry_msgs.msg import Quaternion, PoseStamped, PoseWithCovarianceStamped
 import scipy.ndimage
-from transforms3d.euler import quat2euler, euler2quat
+from transforms3d.euler import quat2euler
 
+# Costmap values (hardcoded in ROS)
 LETHAL_OBSTACLE = 254
 NO_INFO = 255
 INFLATION_BUFFER = 253
 MEDIUM_COST = 128
 FREE_SPACE = 0
 
+# Remapping costmap values to custom brightness values in costmap image
 COST_IMAGE_MAPPINGS = {
     LETHAL_OBSTACLE: 255,
     NO_INFO: 0,
@@ -39,16 +37,21 @@ class CostMapSubscriber(Node):
 
     def __init__(self):
         super().__init__('CostMap_Subscriber')
+        # read costmap values, calculate next goal
         self.create_subscription(Costmap, '/local_costmap/costmap_raw',
                                  self.costmap_callback, 10)
+        # update currentKartYaw
         self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        # set intialKartYaw
         self.create_subscription(PoseWithCovarianceStamped, '/initial',
                                  self.inital_pose_callback, 10)
+        # Publish new goal pose for nav2 every 3 seconds
         self.goal_pose_publisher = self.create_publisher(
             PoseStamped, '/goal_pose', 10)
         self.goal_timer = self.create_timer(3, self.goal_pose_callback)
 
     def costmap_callback(self, msg):
+        # Initialize costmap
         costmap = msg.data
         costmapWidth = msg.metadata.size_y
         costmapHeight = msg.metadata.size_x
@@ -62,19 +65,14 @@ class CostMapSubscriber(Node):
                 costmapArray[i][j] = COST_IMAGE_MAPPINGS.get(
                     costmap[costmapIndex], costmap[costmapIndex])
                 costmapIndex += 1
+
         threshCostmap = cv2.threshold(costmapArray, 100, 255,
                                       cv2.THRESH_BINARY_INV)[1]
         threshCostmap = cv2.copyMakeBorder(threshCostmap, 1, 1, 1, 1,
                                            cv2.BORDER_CONSTANT, (0))
-        # mask1 = np.zeros((costmapWidth, costmapHeight), dtype='uint8')
-        # mask1[:, 0:int(costmapHeight/2)] = 255
-        # mask1 = scipy.ndimage.rotate(mask1, angle=np.rad2deg(self.currentKartYaw - self.initialKartYaw), reshape=False, mode='mirror')
-        # mask1 = np.tile(np.linspace(0, 1.0, costmapWidth, dtype='float32'), (costmapHeight, 1))
-        # mask1 = scipy.ndimage.rotate(mask1, angle=np.rad2deg(self.currentKartYaw - self.initialKartYaw), reshape=False, mode='nearest')
-        # mask1 = cv2.copyMakeBorder(mask1, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
-        # maskedThreshCostmap = np.where(threshCostmap==255, mask1, threshCostmap)
-        # maskedThreshCostmap = cv2.copyMakeBorder(maskedThreshCostmap, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
-        # distImg = cv2.distanceTransform(maskedThreshCostmap, cv2.DIST_L2, 5)
+        
+
+
         mask = np.zeros((costmapHeight, costmapWidth))
         mask_x_values = np.linspace(-1, 1, costmapWidth * 2)
         mask_y_values = (-4 / 5) * ((mask_x_values)**2)
@@ -101,7 +99,6 @@ class CostMapSubscriber(Node):
         cv2.normalize(distImgNormalized, distImgDisplay, 0, 1.0,
                       cv2.NORM_MINMAX)
         max_loc = cv2.minMaxLoc(distImgNormalized)[3]
-        # max_loc_costmap_origin = (max_loc[0]-(costmapWidth/2), max_loc[1]-(costmapHeight/2))
         max_loc_costmap_origin = max_loc
         max_loc_costmap_origin_scaled = tuple(
             cord * costmapResolution for cord in max_loc_costmap_origin)
@@ -113,7 +110,6 @@ class CostMapSubscriber(Node):
         result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
         centx = max_loc[0]
         centy = max_loc[1]
-        # result[centy, centx] = [0, 128, 0]
         result = cv2.circle(result, (centx, centy),
                             5, (0, 100, 0),
                             thickness=cv2.FILLED)
@@ -128,20 +124,14 @@ class CostMapSubscriber(Node):
         self.goal_x = max_loc_costmap_origin_offset[0]
         self.goal_y = max_loc_costmap_origin_offset[1]
 
-        # finalSize = (costmapArray.shape[0]*2, costmapArray.shape[1]*2)
-        # distImgDisplay = cv2.resize(distImgDisplay, finalSize,  interpolation=cv2.INTER_NEAREST)
-        # threshCostmapDisplay = cv2.resize(threshCostmapDisplay, finalSize,  interpolation=cv2.INTER_NEAREST)
-        # result = cv2.resize(result, finalSize,  interpolation=cv2.INTER_NEAREST)
         cv2.imshow('costmap', result)
         cv2.imshow('costmapThresh', threshCostmap)
         cv2.imshow('costampDist', distImgDisplay)
         cv2.waitKey(1)
 
-        # TODO: restrict to paths that only go "forward" relative to the robot
         # NOTE: Rviz rotation flipped,
         # NOTE: Resolution is the scale of the points (meters/cell)
-        # NOTE: FMM planner, scipy
-        # NOTE: add offsets after scaled up to convert to relative pose
+        # TODO: FMM planner, scipy
 
     def odom_callback(self, msg):
         orientationQuat = [
@@ -150,7 +140,6 @@ class CostMapSubscriber(Node):
         ]
         orientationEulers = quat2euler(orientationQuat)
         self.currentKartYaw = orientationEulers[2]
-        # self.get_logger().info(f"yaw: {self.currentKartYaw}")
 
     def inital_pose_callback(self, msg):
         initial_pose_quat = [
@@ -159,7 +148,6 @@ class CostMapSubscriber(Node):
         ]
         initial_pose_euler = quat2euler(initial_pose_quat)
         self.initialKartYaw = initial_pose_euler[2]
-        # self.get_logger().info(f"yaw: {self.initialKartYasw}")
 
     def goal_pose_callback(self):
         msg = PoseStamped()

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'amp_local_waypoint'
+package_name = 'amp_local_goal'
 
 setup(
     name=package_name,
@@ -20,6 +20,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts':
-        ['listener = amp_local_waypoint.follow_waypoint:main'],
+        ['listener = amp_local_goal.follow_waypoint:main'],
     },
 )
