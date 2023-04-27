@@ -19,7 +19,6 @@ setup(
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts':
-        ['listener = amp_local_goal.follow_waypoint:main'],
+        'console_scripts': ['listener = amp_local_goal.follow_waypoint:main'],
     },
 )

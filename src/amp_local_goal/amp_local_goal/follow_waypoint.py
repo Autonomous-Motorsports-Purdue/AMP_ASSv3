@@ -70,8 +70,6 @@ class CostMapSubscriber(Node):
                                       cv2.THRESH_BINARY_INV)[1]
         threshCostmap = cv2.copyMakeBorder(threshCostmap, 1, 1, 1, 1,
                                            cv2.BORDER_CONSTANT, (0))
-        
-
 
         mask = np.zeros((costmapHeight, costmapWidth))
         mask_x_values = np.linspace(-1, 1, costmapWidth * 2)
