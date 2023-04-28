@@ -47,6 +47,13 @@ def generate_launch_description():
                 os.path.join(bringup_share_dir, 'launch', 'zed.launch.py'))),
     ])
 
+    pointcloud_to_laserscan_node = Node(package='pointcloud_to_laserscan',
+                                        executable='pointcloud_to_laserscan',
+                                        remappings=[
+                                            ('scan', 'flattened_pointcloud'),
+                                            ('cloud_in', 'velodyne_points')
+                                        ])
+
     ld = LaunchDescription()
 
     ld.add_action(
