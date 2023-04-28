@@ -97,6 +97,7 @@ Under `src`, on clone, there should be 7 modules (8 when micro-ros-agent is setu
 - [`src/amp_kart_simulate`](src/amp_kart_simulate)
 - [`src/amp_launch_tests`](src/amp_launch_tests)
 - `src/micro-ros-setup`
+- `src/patchwork-plusplus-ros`
 - `src/zed-ros2-wrapper`
 
 ## Technical Documents
