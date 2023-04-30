@@ -50,9 +50,7 @@ private:
     // this function gets called every time new pcl data comes in
     void cloudcb(const sensor_msgs::msg::PointCloud2::UniquePtr input)
     {
-        // try{
         // Get Parameters
-
         double threshold = get_parameter("threshold").as_double();
         bool negative = get_parameter("negative").as_bool();
         float voxel_size = (float) get_parameter("voxel_size").as_double();
@@ -101,7 +99,7 @@ private:
         // Configure ExtractIndices
         pcl::ExtractIndices<pointT> extract_indicies;
 
-        // Precompute
+        // Precompute radiuses
         std::vector<double> radii;
         radii.resize(voxelized.size());
         double max_radius = 0;
@@ -112,6 +110,7 @@ private:
                 max_radius = radii[i];
         }
 
+        // Precompute thetas
         std::vector<double> theta;
         theta.resize(voxelized.size());
         for (size_t i = 0; i < voxelized.size(); i++) {
@@ -119,7 +118,7 @@ private:
             theta[i] = std::atan2(point.x, point.y) + 3.141592;
         }
 
-        // RCLCPP_INFO(get_logger(), "VOX SIZE %ld \n", voxelized.size());
+        RCLCPP_DEBUG(get_logger(), "Voxelized pointcloud size: %ld \n", voxelized.size());
 
         // Sort into sections
         std::vector<std::vector<cloudT::Ptr>> sections;
@@ -129,8 +128,6 @@ private:
             int sectors_in_ring = ring_circ / ring_gap;
             double sector_degs = 2 * 3.141592 / sectors_in_ring;
             size_t sector = theta[i] / sector_degs;
-
-            // RCLCPP_INFO(get_logger(), "rings %ld sectors %ld \n", ring + 1, sector + 1);
 
             if (sections.size() < ring + 1) sections.resize(ring + 1);
             if (sections[ring].size() < sector + 1) sections[ring].resize(sector + 1);
@@ -143,8 +140,6 @@ private:
             for (const cloudT::Ptr section : ring) {
                 if (!section)
                     continue;
-
-                // RCLCPP_INFO(get_logger(), "section has %ld points\n", section->size());
 
                 // Perform Segmentation
                 pcl::PointIndices::Ptr section_inlier_indexes(new pcl::PointIndices);
@@ -165,12 +160,12 @@ private:
                 extract_indicies.filter(section_inliers);
 
                 inliers += section_inliers;
-                // RCLCPP_INFO(get_logger(), "inliers now has %ld points\n", inliers.size());
             }
         }
 
-
         // PCL cloud to PointCloud2
+        RCLCPP_DEBUG(get_logger(), "Publish pointcloud of size %ld \n", inliers.size());
+
         sensor_msgs::msg::PointCloud2::UniquePtr publish_cloud(new sensor_msgs::msg::PointCloud2);
         pcl::toROSMsg(inliers, *publish_cloud);
         RCLCPP_INFO(get_logger(), "inliers now has %ld points\n", inliers.size());
@@ -180,11 +175,6 @@ private:
 
         // Publish
         cloud_pub->publish(std::move(publish_cloud));
-
-        // } catch(...) {
-        //     // if not nough points
-        //     RCLCPP_ERROR(get_logger(), "Encountered some error for this frame, doing nothing...\n");
-        // }
     }
 };
 

@@ -49,6 +49,17 @@ def generate_launch_description():
                              'zed.launch.py'))),
     ])
 
+    ransac_node = Node(package='amp_kart_segmentation',
+                       executable='segmentation',
+                       name='ransac_segmentatation',
+                       output='screen',
+                       parameters=[
+                           os.path.join(bringup_share_dir, 'params',
+                                        'segmentation.params.yaml')
+                       ],
+                       remappings=[('~/input', '/velodyne_points'),
+                                   ('~/output', '/nonground')])
+
     ld = LaunchDescription()
 
     ld.add_action(
@@ -59,5 +70,6 @@ def generate_launch_description():
     ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(sensor_launch_group)
+    ld.add_action(ransac_node)
 
     return ld
