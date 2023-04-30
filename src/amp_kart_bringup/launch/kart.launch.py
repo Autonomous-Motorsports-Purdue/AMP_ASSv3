@@ -53,9 +53,10 @@ def generate_launch_description():
                                              ('ground', 'patchworkpp_ground'),
                                              ('nonground',
                                               'patchworkpp_nonground')],
-                                 parameters=[{
-                                     'cloud_topic': 'velodyne_points'
-                                 }])
+                                 parameters=[
+                                     os.path.join(bringup_share_dir, 'params',
+                                                  'patchworkpp.params.yaml')
+                                 ])
 
     pointcloud_to_laserscan_node = Node(
         package='pointcloud_to_laserscan',
