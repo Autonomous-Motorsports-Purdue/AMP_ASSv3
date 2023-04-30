@@ -105,8 +105,7 @@ Design docs for the major components under construction.
 
 - [Autonomous Navigation Stack](https://docs.google.com/document/d/1H4zmVq_6n9eVdnM5NY5JfDTC1Pg-OLNYgg7p091wSyc/edit?usp=sharing)
 - [Race State System](https://docs.google.com/document/d/1WoQyybG2NdWSwledeUXwAQzwZzE1zPwBlswZRG5uL4k/edit?usp=sharing)
-- [Running ROSbags on WSL](rosbag_tips.md)
-  Please follow ROS standard naming and project conventions:
-
+- [Running ROSbags on WSL](WSL_ROSBAG_TIPS.md)
+- Please follow ROS standard naming and project conventions:
 - [Best Practices](https://docs.ros.org/en/rolling/The-ROS2-Project/Contributing/Developer-Guide.html)
 - [ROS package naming](https://www.ros.org/reps/rep-0144.html)

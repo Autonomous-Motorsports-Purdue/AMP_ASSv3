@@ -4,7 +4,7 @@ Some solutions to issues I encountered to running rosbags.
 
 These bags really helped during testing since we often can't get racing data or have to stick to the basement of BIDC -\_-
 
-If you're looking for vehicle lidar data from residential areas, try the [Kitti Dataset](https://github.com/RobustFieldAutonomyLab/jackal_dataset_20170608), or [Jackal Dataset](https://github.com/RobustFieldAutonomyLab/jackal_dataset_20170608).
+If you're looking for vehicle lidar data from residential areas, try the [Kitti Dataset](https://github.com/RobustFieldAutonomyLab/jackal_dataset_20170608), or [Jackal Dataset](https://www.cvlibs.net/datasets/kitti/).
 This bag has some [coned FSAE pointclouds](https://www.dropbox.com/sh/4116xoc7srps6a5/AAC3q1h50swG7fRMI3USNn2la?dl=0)
 
 ## Running ROS1 bags on WSL
