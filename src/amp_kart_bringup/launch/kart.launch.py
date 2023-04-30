@@ -57,7 +57,7 @@ def generate_launch_description():
                        ],
                        remappings=[('~/input', '/velodyne_points'),
                                    ('~/output', '/nonground')])
-                                   
+
     pointcloud_to_laserscan_node = Node(
         package='pointcloud_to_laserscan',
         executable='pointcloud_to_laserscan_node',
