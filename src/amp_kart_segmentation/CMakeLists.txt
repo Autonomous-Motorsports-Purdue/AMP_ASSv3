@@ -21,7 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
 # Load PCL
-find_package(PCL 1.3 REQUIRED COMPONENTS common segmentation)
+find_package(PCL 1.7 REQUIRED COMPONENTS common segmentation)
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
