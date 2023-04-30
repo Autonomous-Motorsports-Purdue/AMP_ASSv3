@@ -8,8 +8,6 @@
   <maintainer email="berlier3@gmail.com">Nick Berlier</maintainer>
   <license>GNU General Public License 3.0</license>
 
-  <depend>rclpy</depend>
-
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
