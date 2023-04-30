@@ -1,4 +1,12 @@
 RANSACsegmentation:
   ros__parameters:
-    threshold: 0.01
+    threshold: 0.07
     negative: True
+    voxel_size: 0.05
+    minx: -20.
+    maxx: 20.
+    miny: -20.
+    maxy: 20.
+    minz: -3.
+    maxz: 3.
+    ring_gap: 7.
