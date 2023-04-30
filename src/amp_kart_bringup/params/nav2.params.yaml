@@ -37,7 +37,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
-    scan_topic: scan
+    scan_topic: flattened_pointcloud
 
 amcl_map_client:
   ros__parameters:
@@ -95,7 +95,6 @@ controller_server:
     progress_checker_plugin: "progress_checker"
     goal_checker_plugin: "goal_checker"
     controller_plugins: ["FollowPath"]
-
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 2.2479
@@ -106,31 +105,53 @@ controller_server:
       yaw_goal_tolerance: 0.25
       stateful: True
     FollowPath:
-      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      desired_linear_vel: 0.5
-      lookahead_dist: 0.6
-      min_lookahead_dist: 0.3
-      max_lookahead_dist: 0.9
-      lookahead_time: 1.5
-      rotate_to_heading_angular_vel: 1.8
+      plugin: "dwb_core::DWBLocalPlanner"
+      debug_trajectory_details: True
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 5.0
+      max_vel_y: 0.0
+      max_vel_theta: 3.14
+      min_speed_xy: 0.0
+      max_speed_xy: 5.0
+      min_speed_theta: 0.0
+      acc_lim_x: 1.5
+      acc_lim_y: 0.0
+      acc_lim_theta: 3.14
+      decel_lim_x: -2.5
+      decel_lim_y: 0.0
+      decel_lim_theta: -3.2
+      vx_samples: 20
+      vy_samples: 5
+      vtheta_samples: 20
+      sim_time: 1.7
+      linear_granularity: 0.10
+      angular_granularity: 0.025
       transform_tolerance: 0.1
-      use_velocity_scaled_lookahead_dist: false
-      min_approach_linear_velocity: 0.05
-      approach_velocity_scaling_dist: 1.0
-      use_collision_detection: true
-      max_allowed_time_to_collision_up_to_carrot: 0.5
-      use_regulated_linear_velocity_scaling: true
-      use_cost_regulated_linear_velocity_scaling: true
-      regulated_linear_scaling_min_radius: 2.2479
-      regulated_linear_scaling_min_speed: 0.25
-      use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 0.785
-      max_angular_accel: 3.2
-      max_robot_pose_search_dist: 10.0
-      use_interpolation: false
-      cost_scaling_dist: 0.3
-      cost_scaling_gain: 1.0
-      inflation_cost_scaling_factor: 3.0
+      xy_goal_tolerance: 0.25
+      trans_stopped_velocity: 0.25
+      short_circuit_trajectory_evaluation: True
+      stateful: True
+      critics:
+        [
+          "RotateToGoal",
+          "Oscillation",
+          "BaseObstacle",
+          "GoalAlign",
+          "PathAlign",
+          "PathDist",
+          "GoalDist",
+        ]
+      BaseObstacle.scale: 0.02
+      PathAlign.scale: 32.0
+      GoalAlign.scale: 24.0
+      PathAlign.forward_point_distance: 0.1
+      GoalAlign.forward_point_distance: 0.1
+      PathDist.scale: 32.0
+      GoalDist.scale: 24.0
+      RotateToGoal.scale: 32.0
+      RotateToGoal.slowing_factor: 5.0
+      RotateToGoal.lookahead_time: -1.0
 
 controller_server_rclcpp_node:
   ros__parameters:
@@ -139,59 +160,35 @@ controller_server_rclcpp_node:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
-      publish_frequency: 2.0
+      always_send_full_costmap: True
+      footprint_padding: 0.05
+      footprint: "[[-0.3556, 0.7112], [-0.3556, -0.7112], [1.6256, -0.7112], [1.6256, 0.7112]]"
       global_frame: odom
+      height: 10
+      width: 10
+      lethal_cost_threshold: 100
+      map_topic: map
+      publish_frequency: 2.0
+      resolution: 0.1
       robot_base_frame: base_link
+      rolling_window: True
+      track_unknown_space: false
+      transform_tolerance: 0.3
+      update_frequency: 5.0
+      use_maximum: False
       use_sim_time: True
-      rolling_window: true
-      width: 3
-      height: 3
-      resolution: 0.05
-      robot_radius: 0.22
-      plugins: ["stvl_layer", "inflation_layer"]
+      plugins: ["global_static", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         inflation_radius: 0.55
-      stvl_layer:
-        plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+      global_static:
+        plugin: "nav2_costmap_2d::StaticLayer"
         enabled: true
-        voxel_decay: 15.
-        decay_model: 0
-        voxel_size: 0.05
-        track_unknown_space: true
-        unknown_threshold: 15
-        mark_threshold: 0
-        update_footprint_enabled: true
-        combination_method: 1
-        origin_z: 0.0
-        publish_voxel_map: true
-        transform_tolerance: 0.2
-        mapping_mode: false
-        map_save_duration: 60.0
-        observation_sources: pointcloud
-        pointcloud:
-          data_type: PointCloud2
-          topic: /zed/zed_node/point_cloud/cloud_registered
-          marking: true
-          clearing: true
-          obstacle_range: 3.0
-          min_obstacle_height: 0.0
-          max_obstacle_height: 2.0
-          expected_update_rate: 0.0
-          observation_persistence: 0.0
-          inf_is_valid: false
-          filter: "voxel"
-          voxel_min_points: 0
-          clear_after_reading: true
-          max_z: 7.0
-          min_z: 0.1
-          vertical_fov_angle: 0.8745
-          horizontal_fov_angle: 1.048
-          decay_acceleration: 15.0
-          model_type: 0
-      always_send_full_costmap: True
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        transform_tolerance: 0.0
+        map_topic: "/global_costmap/costmap"
   local_costmap_client:
     ros__parameters:
       use_sim_time: True
@@ -202,22 +199,33 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      always_send_full_costmap: True
+      footprint_padding: 0.05
+      footprint: "[[-0.3556, 0.7112], [-0.3556, -0.7112], [1.6256, -0.7112], [1.6256, 0.7112]]"
       global_frame: map
-      robot_base_frame: base_link
-      use_sim_time: True
-      robot_radius: 0.22
-      width: 300
       height: 300
+      width: 300
+      lethal_cost_threshold: 100
+      map_topic: map
       origin_x: -150.
       origin_y: -150.
-      resolution: 0.05
+      publish_frequency: 1.0
+      resolution: 0.1
+      robot_base_frame: base_link
+      rolling_window: False
       track_unknown_space: true
+      transform_tolerance: 0.3
+      update_frequency: 5.0
+      use_maximum: False
+      use_sim_time: True
       plugins: ["static_layer", "stvl_layer", "inflation_layer"]
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True
+        enabled: true
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        transform_tolerance: 0.0
+        map_topic: "/map"
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
@@ -238,28 +246,34 @@ global_costmap:
         transform_tolerance: 0.2
         mapping_mode: false
         map_save_duration: 60.0
-        observation_sources: pointcloud
-        pointcloud:
+        observation_sources: vlp16_mark vlp16_clear
+        vlp16_mark:
           data_type: PointCloud2
           topic: /velodyne_points
           marking: true
-          clearing: true
-          obstacle_range: 3.0
+          clearing: false
+          obstacle_range: 100.0
           min_obstacle_height: 0.0
           max_obstacle_height: 2.0
           expected_update_rate: 0.0
           observation_persistence: 0.0
           inf_is_valid: false
           filter: "voxel"
-          voxel_min_points: 0
           clear_after_reading: true
+        vlp16_clear:
+          enabled: true
+          data_type: PointCloud2
+          topic: /velodyne_points
+          marking: false
+          clearing: true
+          obstacle_range: 100.0
           max_z: 7.0
           min_z: 0.1
-          vertical_fov_angle: 0.8745
-          horizontal_fov_angle: 1.048
-          decay_acceleration: 15.0
-          model_type: 0
-      always_send_full_costmap: True
+          vertical_fov_angle: 0.523
+          vertical_fov_padding: 0.05
+          horizontal_fov_angle: 6.29
+          decay_acceleration: 5.0
+          model_type: 1
   global_costmap_client:
     ros__parameters:
       use_sim_time: True
@@ -283,8 +297,8 @@ map_saver:
 planner_server:
   ros__parameters:
     planner_plugins: ["GridBased"]
-    use_sim_time: True
     expected_planner_frequency: 20.0
+    use_sim_time: True
     GridBased:
       plugin: "smac_planner/SmacPlanner"
       tolerance: 0.5 # tolerance for planning if unable to reach exact pose, in meters, for 2D node
@@ -346,7 +360,7 @@ slam_toolbox:
     odom_frame: odom
     map_frame: map
     base_frame: base_link
-    scan_topic: /scan
+    scan_topic: /flattened_pointcloud
     mode: mapping #localization
 
     # if you'd like to immediately start continuing a map at a given pose
@@ -361,7 +375,7 @@ slam_toolbox:
     transform_publish_period: 0.02 #if 0 never publishes odometry
     map_update_interval: 5.0
     resolution: 0.05
-    max_laser_range: 20.0 #for rastering images
+    max_laser_range: 100.0 #for rastering images
     minimum_time_interval: 0.5
     transform_timeout: 0.2
     tf_buffer_duration: 30.

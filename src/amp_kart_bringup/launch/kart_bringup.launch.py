@@ -22,9 +22,14 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'bringup.launch.py')))
 
+    twist_mux_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(launch_dir, 'twist_mux.launch.py')))
+
     ld = LaunchDescription()
 
     ld.add_action(kart_bringup_cmd)
     ld.add_action(nav2_bringup_cmd)
+    ld.add_action(twist_mux_cmd)
 
     return ld
