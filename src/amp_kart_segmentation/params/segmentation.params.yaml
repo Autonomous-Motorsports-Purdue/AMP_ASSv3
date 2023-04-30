@@ -1,12 +1,14 @@
 RANSACsegmentation:
   ros__parameters:
-    threshold: 0.07
-    negative: True
-    voxel_size: 0.05
-    minx: -20.
+    threshold: 0.07 # Range of heights classified as ground
+    negative: True # True: non-ground parts; False: ground parts
+    voxel_size: 0.05 # Voxelization (gridifying) minimum distance between points before they are removed
+    minx: -20. # The following are dimensions of the crop box
     maxx: 20.
     miny: -20.
     maxy: 20.
     minz: -3.
     maxz: 3.
-    ring_gap: 7.
+    ring_gap:
+      7. # Perform a very naive method of partitioned RANSAC. Each partition is a
+      # section in polar coordinates and ring_gap is both the radial span and arc length of the sector
