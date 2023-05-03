@@ -15,7 +15,8 @@ setup(
     zip_safe=True,
     maintainer='adhomne',
     maintainer_email='adhomne@purdue.edu',
-    description='Calculates local waypoint for the kart and sends it to goal_pose topic',
+    description=
+    'Calculates local waypoint for the kart and sends it to goal_pose topic',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={

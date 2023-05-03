@@ -3,7 +3,8 @@
 <package format="3">
   <name>amp_local_goal</name>
   <version>0.0.0</version>
-  <description>Calculates local waypoint for the kart and sends it to goal_pose topic</description>
+  <description
+  >Calculates local waypoint for the kart and sends it to goal_pose topic</description>
   <maintainer email="adhomne@purdue.edu">adhomne</maintainer>
   <license>Apache-2.0</license>
 
