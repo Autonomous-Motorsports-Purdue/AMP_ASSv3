@@ -3,12 +3,10 @@
 <package format="3">
   <name>amp_local_goal</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="arya@todo.todo">arya</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Calculates local waypoint for the kart and sends it to goal_pose topic</description>
+  <maintainer email="adhomne@purdue.edu">adhomne</maintainer>
+  <license>Apache-2.0</license>
 
-  <test_depend>ament_copyright</test_depend>
-  <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
   <exec_depend>rclpy</exec_depend>
