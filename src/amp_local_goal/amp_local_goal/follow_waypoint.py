@@ -39,7 +39,7 @@ class CostMapSubscriber(Node):
     goal_z = 0
 
     def __init__(self):
-        super().__init__('CostMap_Subscriber')
+        super().__init__('costmap_subscriber')
 
         goal_update_freq = self.get_parameter("/goal_update_freq")
         self.parabola_numer = self.get_parameter("/parabola_numer")
