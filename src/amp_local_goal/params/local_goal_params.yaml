@@ -1,0 +1,6 @@
+amp_local_goal:
+  ros__parameters:
+    goal_update_freq: 3
+    parabola_numer: -4
+    parabola_denom: 5
+    show_costmaps: true

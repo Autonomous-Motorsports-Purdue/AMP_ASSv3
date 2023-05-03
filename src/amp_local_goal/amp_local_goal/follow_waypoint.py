@@ -30,6 +30,9 @@ class CostMapSubscriber(Node):
     initialKartYaw = 0
     currentKartYaw = 0
     currentKartQuat = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+    parabola_numer = 0
+    parabola_denom = 0
+    show_costmaps = False
 
     goal_x = 0
     goal_y = 0
@@ -37,6 +40,12 @@ class CostMapSubscriber(Node):
 
     def __init__(self):
         super().__init__('CostMap_Subscriber')
+
+        goal_update_freq = self.get_parameter("/goal_update_freq")
+        self.parabola_numer = self.get_parameter("/parabola_numer")
+        self.parabola_denom = self.get_parameter("/parabola_denom")
+        self.show_costmaps = self.get_parameter("/show_costmaps")
+
         # read costmap values, calculate next goal
         self.create_subscription(Costmap, '/local_costmap/costmap_raw',
                                  self.costmap_callback, 10)
@@ -45,10 +54,11 @@ class CostMapSubscriber(Node):
         # set intialKartYaw
         self.create_subscription(PoseWithCovarianceStamped, '/initial',
                                  self.inital_pose_callback, 10)
-        # Publish new goal pose for nav2 every 3 seconds
+        # Publish new goal pose for nav2 with timer
         self.goal_pose_publisher = self.create_publisher(
             PoseStamped, '/goal_pose', 10)
-        self.goal_timer = self.create_timer(3, self.goal_pose_callback)
+        self.goal_timer = self.create_timer(goal_update_freq,
+                                            self.goal_pose_callback)
 
     def costmap_callback(self, msg):
         # Initialize costmap
@@ -66,14 +76,18 @@ class CostMapSubscriber(Node):
                     costmap[costmapIndex], costmap[costmapIndex])
                 costmapIndex += 1
 
+        # threshold for costmap values that meet our minimum (atm, just under inflation buffer)
         threshCostmap = cv2.threshold(costmapArray, 100, 255,
                                       cv2.THRESH_BINARY_INV)[1]
+        # add border around image to disincentivize picking values that are far from the kart
         threshCostmap = cv2.copyMakeBorder(threshCostmap, 1, 1, 1, 1,
                                            cv2.BORDER_CONSTANT, (0))
 
+        # apply parabola mask to image
         mask = np.zeros((costmapHeight, costmapWidth))
         mask_x_values = np.linspace(-1, 1, costmapWidth * 2)
-        mask_y_values = (-4 / 5) * ((mask_x_values)**2)
+        mask_y_values = (self.parabola_numer / self.parabola_denom) * (
+            (mask_x_values)**2)
         mask_x_indices = np.floor(
             ((mask_x_values + 1) / 2) * (costmapWidth - 1)).astype(int)
         mask_y_indices = np.floor(
@@ -89,43 +103,55 @@ class CostMapSubscriber(Node):
             mode='nearest')
         mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
         maskedThershCostmap = (threshCostmap * mask).astype('uint8')
+
+        # Compute Distance Transform
         distImg = cv2.distanceTransform(maskedThershCostmap, cv2.DIST_L2, 5)
-        print(distImg.dtype)
         distImgNormalized = distImg.copy()
         cv2.normalize(distImg, distImgNormalized, 0, 1.0, cv2.NORM_MINMAX)
-        distImgDisplay = distImgNormalized.copy()
-        cv2.normalize(distImgNormalized, distImgDisplay, 0, 1.0,
-                      cv2.NORM_MINMAX)
+
+        # Find point furthest away from all obstacles
         max_loc = cv2.minMaxLoc(distImgNormalized)[3]
+
+        # scale points to real world distance
         max_loc_costmap_origin = max_loc
         max_loc_costmap_origin_scaled = tuple(
             cord * costmapResolution for cord in max_loc_costmap_origin)
+
+        # move points to current offset of local map from global origin
         max_loc_costmap_origin_offset = (max_loc_costmap_origin_scaled[0] +
                                          xOffset,
                                          max_loc_costmap_origin_scaled[1] +
                                          yOffset)
-        result = costmapArray.copy()
-        result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
-        centx = max_loc[0]
-        centy = max_loc[1]
-        result = cv2.circle(result, (centx, centy),
-                            5, (0, 100, 0),
-                            thickness=cv2.FILLED)
+
+        # log values
         self.get_logger().info(f"{[centx, centy]}")
         self.get_logger().info(f"{max_loc_costmap_origin_scaled}")
         self.get_logger().info(f"{max_loc_costmap_origin_offset}")
         self.get_logger().info(f"{msg.metadata.origin}")
-        distImgDisplay = cv2.flip(distImgDisplay, 1)
-        threshCostmapDisplay = cv2.flip(threshCostmap, 1)
-        result = cv2.flip(result, 1)
 
         self.goal_x = max_loc_costmap_origin_offset[0]
         self.goal_y = max_loc_costmap_origin_offset[1]
 
-        cv2.imshow('costmap', result)
-        cv2.imshow('costmapThresh', threshCostmap)
-        cv2.imshow('costampDist', distImgDisplay)
-        cv2.waitKey(1)
+        # display costmaps in GUI
+        if self.show_costmaps:
+            # add green point for current goal
+            result = costmapArray.copy()
+            result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
+            centx = max_loc[0]
+            centy = max_loc[1]
+            result = cv2.circle(result, (centx, centy),
+                                5, (0, 100, 0),
+                                thickness=cv2.FILLED)
+
+            # HACK: flip images so they are oriented correctly
+            distImgDisplay = cv2.flip(distImgNormalized, 1)
+            threshCostmapDisplay = cv2.flip(threshCostmap, 1)
+            result = cv2.flip(result, 1)
+
+            cv2.imshow('costmap', result)
+            cv2.imshow('costmapThresh', threshCostmapDisplay)
+            cv2.imshow('costampDist', distImgDisplay)
+            cv2.waitKey(1)
 
         # NOTE: Rviz rotation flipped,
         # NOTE: Resolution is the scale of the points (meters/cell)
