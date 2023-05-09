@@ -27,24 +27,31 @@ COST_IMAGE_MAPPINGS = {
 
 class CostMapSubscriber(Node):
 
-    initialKartYaw = 0
-    currentKartYaw = 0
-    currentKartQuat = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
+    initial_kart_yaw = None
+    current_kart_yaw = 0
+    current_kart_quat = Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
     parabola_numer = 0
     parabola_denom = 0
     show_costmaps = False
+    costmap_threshold = 0
+    costmap_timestamp = None
+    
 
     goal_x = 0
     goal_y = 0
     goal_z = 0
 
     def __init__(self):
+        """
+        Gets params and sets up subscribes/publishes to the required nodes. 
+        """
         super().__init__('costmap_subscriber')
 
         goal_update_freq = self.get_parameter("/goal_update_freq")
         self.parabola_numer = self.get_parameter("/parabola_numer")
         self.parabola_denom = self.get_parameter("/parabola_denom")
         self.show_costmaps = self.get_parameter("/show_costmaps")
+        self.costmap_threshold = self.get_parameter("/costmap_threshold")
 
         # read costmap values, calculate next goal
         self.create_subscription(Costmap, '/local_costmap/costmap_raw',
@@ -61,6 +68,9 @@ class CostMapSubscriber(Node):
                                             self.goal_pose_callback)
 
     def costmap_callback(self, msg):
+        if self.initial_kart_yaw == None:
+            self.get_logger.warn("initial_kart_yaw is None! Not running costmap callback.")
+            return
         # Initialize costmap
         costmap = msg.data
         costmapWidth = msg.metadata.size_y
@@ -77,7 +87,7 @@ class CostMapSubscriber(Node):
                 costmapIndex += 1
 
         # threshold for costmap values that meet our minimum (atm, just under inflation buffer)
-        threshCostmap = cv2.threshold(costmapArray, 100, 255,
+        threshCostmap = cv2.threshold(costmapArray, self.costmap_threshold, 255,
                                       cv2.THRESH_BINARY_INV)[1]
         # add border around image to disincentivize picking values that are far from the kart
         threshCostmap = cv2.copyMakeBorder(threshCostmap, 1, 1, 1, 1,
@@ -98,7 +108,7 @@ class CostMapSubscriber(Node):
         mask = scipy.ndimage.rotate(
             mask,
             angle=np.rad2deg(-1 *
-                             (self.currentKartYaw - self.initialKartYaw)) - 90,
+                             (self.current_kart_yaw - self.initial_kart_yaw)) - 90,
             reshape=False,
             mode='nearest')
         mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
@@ -111,29 +121,19 @@ class CostMapSubscriber(Node):
 
         # Find point furthest away from all obstacles
         max_loc = cv2.minMaxLoc(distImgNormalized)[3]
+        max_loc_global_coords = (((max_loc[0] * costmapResolution) + xOffset), ((max_loc[1] * costmapResolution) + yOffset))
 
-        # scale points to real world distance
-        max_loc_costmap_origin = max_loc
-        max_loc_costmap_origin_scaled = tuple(
-            cord * costmapResolution for cord in max_loc_costmap_origin)
+        self.get_logger().info(f"Global goal coords: {max_loc_global_coords}")
 
-        # move points to current offset of local map from global origin
-        max_loc_costmap_origin_offset = (max_loc_costmap_origin_scaled[0] +
-                                         xOffset,
-                                         max_loc_costmap_origin_scaled[1] +
-                                         yOffset)
-
-        # log values
-        self.get_logger().info(f"{[centx, centy]}")
-        self.get_logger().info(f"{max_loc_costmap_origin_scaled}")
-        self.get_logger().info(f"{max_loc_costmap_origin_offset}")
-        self.get_logger().info(f"{msg.metadata.origin}")
-
-        self.goal_x = max_loc_costmap_origin_offset[0]
-        self.goal_y = max_loc_costmap_origin_offset[1]
+        # update gloabl vars for publisher
+        self.goal_x = max_loc_global_coords[0]
+        self.goal_y = max_loc_global_coords[1]
+        self.costmap_timestamp = msg.header.stamp
 
         # display costmaps in GUI
         if self.show_costmaps:
+            self.get_logger().info(f"Plotted goal pixel coords: {[centx, centy]}")
+
             # add green point for current goal
             result = costmapArray.copy()
             result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
@@ -143,7 +143,7 @@ class CostMapSubscriber(Node):
                                 5, (0, 100, 0),
                                 thickness=cv2.FILLED)
 
-            # HACK: flip images so they are oriented correctly
+            # HACK: flip images so they are oriented correctly as they are shown in Rviz
             distImgDisplay = cv2.flip(distImgNormalized, 1)
             threshCostmapDisplay = cv2.flip(threshCostmap, 1)
             result = cv2.flip(result, 1)
@@ -155,29 +155,40 @@ class CostMapSubscriber(Node):
 
         # NOTE: Rviz rotation flipped,
         # NOTE: Resolution is the scale of the points (meters/cell)
-        # TODO: FMM planner, scipy
 
     def odom_callback(self, msg):
+        """Update the odometry of the kart, to be used for goal pose.
+        
+           msg - stamped_pose msg
+        """
         orientationQuat = [
             msg.pose.pose.orientation.w, msg.pose.pose.orientation.x,
             msg.pose.pose.orientation.y, msg.pose.pose.orientation.z
         ]
         orientationEulers = quat2euler(orientationQuat)
-        self.currentKartYaw = orientationEulers[2]
+        self.current_kart_yaw = orientationEulers[2]
 
     def inital_pose_callback(self, msg):
+        """Set the initial pose of the kart, once nav2 is initialized.
+           To be used for updating the rotation of the mask.
+
+           msg - stamped_pose msg
+        """
         initial_pose_quat = [
             msg.pose.pose.orientation.w, msg.pose.pose.orientation.x,
             msg.pose.pose.orientation.y, msg.pose.pose.orientation.z
         ]
         initial_pose_euler = quat2euler(initial_pose_quat)
-        self.initialKartYaw = initial_pose_euler[2]
+        self.initial_kart_yaw = initial_pose_euler[2]
 
     def goal_pose_callback(self):
+        """Publish the goal pose to the goal_pose topic based on global vars.
+        """
         msg = PoseStamped()
         msg.pose.position.x = float(self.goal_x)
         msg.pose.position.y = float(self.goal_y)
-        msg.pose.orientation = self.currentKartQuat
+        msg.pose.orientation = self.current_kart_quat
+        msg.header.stamp = self.costmap_timestamp
         self.goal_pose_publisher.publish(msg)
 
 

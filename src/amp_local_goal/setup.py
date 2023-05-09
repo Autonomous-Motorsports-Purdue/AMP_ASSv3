@@ -18,7 +18,7 @@ setup(
     description=
     'Calculates local waypoint for the kart and sends it to goal_pose topic',
     license='Apache-2.0',
-    tests_require=['pytest'],
+    tests_require=[],
     entry_points={
         'console_scripts': ['listener = amp_local_goal.follow_waypoint:main'],
     },

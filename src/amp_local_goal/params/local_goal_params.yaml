@@ -4,3 +4,4 @@ amp_local_goal:
     parabola_numer: -4
     parabola_denom: 5
     show_costmaps: true
+    costmap_threshold: 100
