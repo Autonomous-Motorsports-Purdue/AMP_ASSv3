@@ -13,11 +13,10 @@ class ServiceClient(Node):
         self.publisher_ = self.create_publisher(Bool, '/stop', 2)
         if not self.client.wait_for_service(timeout_sec=5.0):
             kill_msg = Bool()
-            kill_msg.data= True
+            kill_msg.data = True
             self.publisher_.publish(kill_msg)
             self.get_logger().info("Kill msg sent")
-            
-     
+
         self.request = NetworkState.Request()
 
     def send_request(self):
@@ -30,15 +29,15 @@ class ServiceClient(Node):
 def main(args=None):
 
     rclpy.init(args=args)
-    
+
     while rclpy.ok():
         client = ServiceClient()
         #print(client.client.wait_for_service())
         if client.client.wait_for_service():
-        	response = client.send_request()
-        	print(response.network_state)
+            response = client.send_request()
+            print(response.network_state)
         client.destroy_node()
-        time.sleep(1);
+        time.sleep(1)
     rclpy.shutdown()
 
 
