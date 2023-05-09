@@ -1,6 +1,6 @@
 # Local Goal
 
-Executable: 
+Executable:
 
 ## Files
 

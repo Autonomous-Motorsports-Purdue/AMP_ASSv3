@@ -35,7 +35,6 @@ class CostMapSubscriber(Node):
     show_costmaps = False
     costmap_threshold = 0
     costmap_timestamp = None
-    
 
     goal_x = 0
     goal_y = 0
@@ -43,7 +42,7 @@ class CostMapSubscriber(Node):
 
     def __init__(self):
         """
-        Gets params and sets up subscribes/publishes to the required nodes. 
+        Gets params and sets up subscribes/publishes to the required nodes.
         """
         super().__init__('costmap_subscriber')
 
@@ -69,7 +68,8 @@ class CostMapSubscriber(Node):
 
     def costmap_callback(self, msg):
         if self.initial_kart_yaw == None:
-            self.get_logger.warn("initial_kart_yaw is None! Not running costmap callback.")
+            self.get_logger.warn(
+                "initial_kart_yaw is None! Not running costmap callback.")
             return
         # Initialize costmap
         costmap = msg.data
@@ -87,8 +87,8 @@ class CostMapSubscriber(Node):
                 costmapIndex += 1
 
         # threshold for costmap values that meet our minimum (atm, just under inflation buffer)
-        threshCostmap = cv2.threshold(costmapArray, self.costmap_threshold, 255,
-                                      cv2.THRESH_BINARY_INV)[1]
+        threshCostmap = cv2.threshold(costmapArray, self.costmap_threshold,
+                                      255, cv2.THRESH_BINARY_INV)[1]
         # add border around image to disincentivize picking values that are far from the kart
         threshCostmap = cv2.copyMakeBorder(threshCostmap, 1, 1, 1, 1,
                                            cv2.BORDER_CONSTANT, (0))
@@ -108,7 +108,8 @@ class CostMapSubscriber(Node):
         mask = scipy.ndimage.rotate(
             mask,
             angle=np.rad2deg(-1 *
-                             (self.current_kart_yaw - self.initial_kart_yaw)) - 90,
+                             (self.current_kart_yaw - self.initial_kart_yaw)) -
+            90,
             reshape=False,
             mode='nearest')
         mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
@@ -121,18 +122,20 @@ class CostMapSubscriber(Node):
 
         # Find point furthest away from all obstacles
         max_loc = cv2.minMaxLoc(distImgNormalized)[3]
-        max_loc_global_coords = (((max_loc[0] * costmapResolution) + xOffset), ((max_loc[1] * costmapResolution) + yOffset))
+        max_loc_global_coords = (((max_loc[0] * costmapResolution) + xOffset),
+                                 ((max_loc[1] * costmapResolution) + yOffset))
 
         self.get_logger().info(f"Global goal coords: {max_loc_global_coords}")
 
-        # update gloabl vars for publisher
+        # update global vars for publisher
         self.goal_x = max_loc_global_coords[0]
         self.goal_y = max_loc_global_coords[1]
         self.costmap_timestamp = msg.header.stamp
 
         # display costmaps in GUI
         if self.show_costmaps:
-            self.get_logger().info(f"Plotted goal pixel coords: {[centx, centy]}")
+            self.get_logger().info(
+                f"Plotted goal pixel coords: {[centx, centy]}")
 
             # add green point for current goal
             result = costmapArray.copy()
@@ -158,7 +161,7 @@ class CostMapSubscriber(Node):
 
     def odom_callback(self, msg):
         """Update the odometry of the kart, to be used for goal pose.
-        
+
            msg - stamped_pose msg
         """
         orientationQuat = [
