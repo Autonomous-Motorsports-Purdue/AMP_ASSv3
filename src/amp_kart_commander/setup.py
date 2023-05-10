@@ -19,7 +19,9 @@ setup(
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts':
-        ['kart_commander = amp_kart_commander.kart_commander:main'],
+        'console_scripts': [
+            'kart_commander = amp_kart_commander.kart_commander:main',
+            'switch_mux = amp_kart_commander.switch_mux:main'
+        ],
     },
 )
