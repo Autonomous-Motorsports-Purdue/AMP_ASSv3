@@ -15,7 +15,8 @@ setup(
     zip_safe=True,
     maintainer='berliernj',
     maintainer_email='berlier3@gmail.com',
-    description='Checks connection to the network. E-stops if disconnected for 5 seconds',
+    description=
+    'Checks connection to the network. E-stops if disconnected for 5 seconds',
     license='GNU General Public License 3.0',
     entry_points={
         'console_scripts': [

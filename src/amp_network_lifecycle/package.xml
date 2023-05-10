@@ -3,7 +3,8 @@
 <package format="3">
   <name>amp_network_lifecycle</name>
   <version>0.0.1</version>
-  <description>Checks connection to the network. E-stops if disconnected for 5 seconds</description>
+  <description
+  >Checks connection to the network. E-stops if disconnected for 5 seconds</description>
   <maintainer email="berlier3@gmail.com">berliernj</maintainer>
   <license>GNU General Public License 3.0</license>
 
