@@ -47,6 +47,17 @@ def generate_launch_description():
                 os.path.join(bringup_share_dir, 'launch', 'zed.launch.py'))),
     ])
 
+    patchworkpp_demo_node = Node(package='patchworkpp',
+                                 executable='demo',
+                                 remappings=[('cloud', 'patchworkpp_cloud'),
+                                             ('ground', 'patchworkpp_ground'),
+                                             ('nonground',
+                                              'patchworkpp_nonground')],
+                                 parameters=[
+                                     os.path.join(bringup_share_dir, 'params',
+                                                  'patchworkpp.params.yaml')
+                                 ])
+
     pointcloud_to_laserscan_node = Node(
         package='pointcloud_to_laserscan',
         executable='pointcloud_to_laserscan_node',
@@ -63,6 +74,7 @@ def generate_launch_description():
     ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(sensor_launch_group)
+    ld.add_action(patchworkpp_demo_node)
     ld.add_action(pointcloud_to_laserscan_node)
 
     return ld

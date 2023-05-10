@@ -223,7 +223,7 @@ global_costmap:
         observation_sources: vlp16_mark vlp16_clear
         vlp16_mark:
           data_type: PointCloud2
-          topic: /velodyne_points
+          topic: /patchworkpp_nonground
           marking: true
           clearing: false
           obstacle_range: 100.0
@@ -237,7 +237,7 @@ global_costmap:
         vlp16_clear:
           enabled: true
           data_type: PointCloud2
-          topic: /velodyne_points
+          topic: /patchworkpp_nonground
           marking: false
           clearing: true
           obstacle_range: 100.0

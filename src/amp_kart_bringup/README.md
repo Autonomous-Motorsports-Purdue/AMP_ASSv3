@@ -57,6 +57,7 @@ and (expected) topic publishers:
   - `VLP16.params.yaml` _VLP16 parameters_
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
+  - `patchworkpp.params.yaml` _Patchwork++ parameters_
   - `twist_mux_1.params.yaml`
   - `twist_mux_2.params.yaml`
 - `rviz/`
