@@ -5,7 +5,7 @@ I didn't get around to implementing [launch testing](https://github.com/ros2/lau
 ## Auto Works
 
 - Launch `Nav2` and `amp_bringup/launch/twist_mux.launch`
-- Verify that the default state allows for nav2 commands to show in `cmd_vel`
+- Verify that the default state does not allow nav2 commands to show in `cmd_vel`
 
 ## RC Works
 
