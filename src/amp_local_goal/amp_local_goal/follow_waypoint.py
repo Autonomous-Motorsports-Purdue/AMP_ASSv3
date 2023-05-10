@@ -94,6 +94,7 @@ class CostMapSubscriber(Node):
                                            cv2.BORDER_CONSTANT, (0))
 
         # apply parabola mask to image
+        # TODO: Update this to use np.meshgrid instead of linspace
         mask = np.zeros((costmapHeight, costmapWidth))
         mask_x_values = np.linspace(-1, 1, costmapWidth * 2)
         mask_y_values = (self.parabola_numer / self.parabola_denom) * (
