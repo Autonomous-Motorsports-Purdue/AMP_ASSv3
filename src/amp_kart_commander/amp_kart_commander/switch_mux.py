@@ -67,8 +67,6 @@ class SwitchMux(Node):
 
     def input_topic_callback(self, topic_name, twist_msg):
         ''' Upon receiving a message to any registered input of the mux'''
-        self.get_logger().info(
-            f"got from {topic_name} curr is {self.current_topic}")
         if topic_name == self.current_topic:
             self.publisher.publish(twist_msg)
 
