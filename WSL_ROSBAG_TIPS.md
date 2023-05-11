@@ -17,7 +17,11 @@ The bag file utility in ros2 `ros2 bag` has compatibility settings for running b
 
 `curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -`
 
-`sudo apt update` 2. Then install the bag compatibility plugin `sudo apt install ros-<distro>-rosbag2-bag-v2-plugins`. This will install its dependency, `ros-distro-ros1-bridge`, which further requires some `noetic` packages 3. In order to have ROS 1 and 2 active together, we must source `/opt/ros/noetic/setup.bash` and `/opt/ros/foxy/setup.bash`, _in that order_. If you are sourcing foxy in your `.bashrc` already, add this before it:
+`sudo apt update` 
+
+2. Then install the bag compatibility plugin `sudo apt install ros-<distro>-rosbag2-bag-v2-plugins`. This will install its dependency, `ros-distro-ros1-bridge`, which further requires some `noetic` packages 
+
+3. In order to have ROS 1 and 2 active together, we must source `/opt/ros/noetic/setup.bash` and `/opt/ros/foxy/setup.bash`, _in that order_. If you are sourcing foxy in your `.bashrc` already, add this before it:
 
 ```
 source /opt/ros/noetic/setup.bash
