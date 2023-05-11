@@ -39,6 +39,7 @@ The priorities are implemented with `switch_mux`, a node defined in `kart_comman
   - `teleop.launch.py` _Launch joy teleop nodes_
   - `kart_commander.launch.py` _Launch kart_commander and the twist muxes_
   - `VLP16.launch.py` _Initialize Velodyne LIDAR VLP16 nodes_
+  - `zed.launch.py` _Zed camera launch file_
 - `map/`
   - `empty_map.yaml` _Default empty map_
 - `params/`
@@ -46,5 +47,6 @@ The priorities are implemented with `switch_mux`, a node defined in `kart_comman
   - `VLP16db.params.yaml` _VLP16 calibration parameters_
   - `nav2.params.yaml` _Nav2 parameters_
   - `kart_commander.params.yaml`
+  - `patchworkpp.params.yaml` _Patchwork++ parameters_
 - `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_

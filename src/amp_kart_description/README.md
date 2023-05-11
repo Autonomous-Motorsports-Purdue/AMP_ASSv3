@@ -12,6 +12,7 @@ of the kart.
 - `meshes/`
   - `chassis.dae`
   - `chassis.STL`
+  - `chassisV2.stl`
   - `cone.dae`
   - `hokuyo.dae`
   - `left_front_wheel.dae`
