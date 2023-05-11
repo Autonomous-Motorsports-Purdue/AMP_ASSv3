@@ -1,10 +1,8 @@
-'''ROS2 service server for behavioral determination based on client call'''
+"""ROS2 service server for behavioral determination based on client call"""
 
-#usr/bin/env python3
 from rcs_service.srv import TrackState
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
 
 
 class ServiceServer(Node):

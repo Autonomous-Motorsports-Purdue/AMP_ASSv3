@@ -18,7 +18,6 @@ setup(
     description=
     'Service client for sent track state change requests to the service server',
     license='GNU General Public License 3.0',
-    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             "amp_rcs_client = amp_rcs.service_client:main",
