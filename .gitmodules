@@ -8,3 +8,6 @@
 [submodule "src/patchwork-plusplus-ros"]
 	path = src/patchwork-plusplus-ros
 	url = git@github.com:Autonomous-Motorsports-Purdue/patchwork-plusplus-ros.git
+[submodule "src/Race-Control-System-Client"]
+	path = src/Race-Control-System-Client
+	url = https://github.com/Autonomous-Motorsports-Purdue/Race-Control-System-Client.git
