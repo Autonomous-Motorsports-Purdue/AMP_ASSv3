@@ -8,10 +8,11 @@ from std_msgs.msg import String
 
 from rclpy.qos import QoSProfile, HistoryPolicy, DurabilityPolicy, ReliabilityPolicy
 
-# Create high-reliability QoS for mux toggling
-qos_profile = QoSProfile(
-    history=HistoryPolicy.KEEP_LAST,
-    depth=1,  # Last always has priority anyways
+# Create high-reliability QoS with guaranteed delivery
+qos_reliable = QoSProfile(
+    history=HistoryPolicy.
+    KEEP_LAST,  # TRANSIENT_LOCAL set, not point in history
+    depth=1,  # See above
     reliability=ReliabilityPolicy.RELIABLE,  # Guaranteed delivery
     durability=DurabilityPolicy.
     TRANSIENT_LOCAL  # Re-send msg to late-joining subscribers
@@ -22,33 +23,31 @@ class TrackStateReciever(Node):
 
     def __init__(self):
         super().__init__('track_state_reciever')
-        self.server = self.create_service(TrackState, 'track_state',
-                                          self.track_state_callback)
-        self.mux_publisher = self.create_publisher(String,
-                                                   'select_topic',
-                                                   qos_profile=qos_profile)
+        self.create_subscription(String, 'track_state',
+                                 self.track_state_callback, qos_reliable)
+        self.kart_state_pub = self.create_publisher(String, 'kart_state',
+                                                    qos_reliable)
+        self.mux_publisher = self.create_publisher(String, 'select_topic',
+                                                   qos_reliable)
 
-    def track_state_callback(self, request, response):
-        response.state = request.state
+    def track_state_callback(self, new_state):
+        new_state: str = new_state.data
 
-        self.get_logger().info('Recieved: %s Response: %s' %
-                               (request.state, response.state))
+        self.get_logger().info(f'Recieved Track State: {new_state}')
 
         # self.get_logger().info('eeee' + str(dir(TrackState.Request)))
 
         # TODO More complex states in TrackState.srv have transition rules not yet implemented
 
-        if response.state == TrackState.Request.EMERGENCY or response.state == TrackState.Request.SAFESTOP:
+        if new_state == TrackState.Request.EMERGENCY or new_state == TrackState.Request.SAFESTOP:
             self.mux_publisher.publish(String(data='__none'))
             self.get_logger().info('STOP: nav2 and teleop disabled')
-        if response.state == TrackState.Request.RC or response.state == TrackState.Request.RACEDONE:
+        if new_state == TrackState.Request.RC or new_state == TrackState.Request.RACEDONE:
             self.mux_publisher.publish(String(data='joy_vel'))
             self.get_logger().info('RC: joy only')
-        if response.state == TrackState.Request.AUTONOMOUS_SLOW or response.state == TrackState.Request.AUTONOMOUS_OVERTAKE:
+        if new_state == TrackState.Request.AUTONOMOUS_SLOW or new_state == TrackState.Request.AUTONOMOUS_OVERTAKE:
             self.mux_publisher.publish(String(data='nav_vel'))
             self.get_logger().info('AUTO: nav2 only')
-
-        return response
 
 
 def main(args=None):
