@@ -2,11 +2,10 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>amp_kart_commander</name>
-  <version>0.0.0</version>
-  <description>Updates cmd_vel max based on TrackState changes</description>
-  <maintainer email="xchenbox@gmail.com">lucy</maintainer>
-  <license>TODO: License declaration</license>
-
+  <version>0.1.0</version>
+  <description
+  >Listens for TrackState changes to redirect the proper Twist source to cmd_vel</description>
+  <maintainer email="xchenbox@gmail.com">Xuyang Chen</maintainer>
   <export>
     <build_type>ament_python</build_type>
   </export>
