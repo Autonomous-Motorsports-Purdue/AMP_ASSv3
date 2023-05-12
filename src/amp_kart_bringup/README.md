@@ -48,5 +48,6 @@ The priorities are implemented with `switch_mux`, a node defined in `kart_comman
   - `nav2.params.yaml` _Nav2 parameters_
   - `kart_commander.params.yaml`
   - `patchworkpp.params.yaml` _Patchwork++ parameters_
+  - `switch_mux.params.yaml`
 - `rviz/`
   - `nav2_default_view.rviz.yaml` _RViz config for Nav2_
