@@ -18,10 +18,10 @@ qos_profile = QoSProfile(
 )
 
 
-class ServiceServer(Node):
+class TrackStateReciever(Node):
 
     def __init__(self):
-        super().__init__('service_server')
+        super().__init__('track_state_reciever')
         self.server = self.create_service(TrackState, 'track_state',
                                           self.track_state_callback)
         self.mux_publisher = self.create_publisher(String,
@@ -53,7 +53,7 @@ class ServiceServer(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ServiceServer()
+    node = TrackStateReciever()
     rclpy.spin(node)
     rclpy.shutdown()
 

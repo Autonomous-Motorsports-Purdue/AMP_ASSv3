@@ -8,7 +8,7 @@ from rclpy.node import Node
 class ServiceServer(Node):
 
     def __init__(self):
-        super().__init__('service_server')
+        super().__init__('track_state_reciever')
         self.server = self.create_service(TrackState, 'track_state',
                                           self.track_state_callback)
 
