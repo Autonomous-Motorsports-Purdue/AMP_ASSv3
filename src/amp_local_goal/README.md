@@ -12,11 +12,12 @@ obstacles but weakly defined by cones (which have large gaps in them). So a free
 `params/local_goal_params.yaml`: _Parameters for the algo with descriptions_
 
 ## Parameters
+
 See `local_goal_params.yaml`
 
 ## Topics
 
-When a costmap is recieved, the most recent value of `odom` is used without further synchronization.
+When a costmap is received, the most recent value of `odom` is used without further synchronization.
 
 Subscribed
 
@@ -28,4 +29,4 @@ Subscribed
 
 Published
 
-- `/goal_pose`: 
+- `/goal_pose`:
