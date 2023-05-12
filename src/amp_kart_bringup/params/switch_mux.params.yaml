@@ -1,0 +1,6 @@
+switch_mux:
+  ros__parameters:
+    input_topics:
+      - joy_vel
+      - nav_vel
+    initial_topic: __none

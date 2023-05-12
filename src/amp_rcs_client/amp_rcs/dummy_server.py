@@ -1,6 +1,6 @@
-"""ROS2 service server for behavioral determination based on client call."""
+"""ROS2 service server for behavioral determination based on client call"""
 
-from rcs_service.srv import TrackState
+from amp_msgs.srv import TrackState
 import rclpy
 from rclpy.node import Node
 
@@ -8,7 +8,7 @@ from rclpy.node import Node
 class ServiceServer(Node):
 
     def __init__(self):
-        super().__init__('service_server')
+        super().__init__('track_state_reciever')
         self.server = self.create_service(TrackState, 'track_state',
                                           self.track_state_callback)
 

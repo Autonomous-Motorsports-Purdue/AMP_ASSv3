@@ -1,10 +1,10 @@
 from setuptools import setup
 
-package_name = 'amp_rcs'
+package_name = 'amp_kart_commander'
 
 setup(
     name=package_name,
-    version='0.0.1',
+    version='0.0.0',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -13,15 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='berliernj',
-    maintainer_email='berlier3@gmail.com',
-    description=
-    'Service client for sent track state change requests to the service server',
-    license='GNU General Public License 3.0',
+    maintainer='lucy',
+    maintainer_email='xchenbox@gmail.com',
+    description='TODO: Package description',
+    license='TODO: License declaration',
     entry_points={
         'console_scripts': [
-            "amp_rcs_client = amp_rcs.service_client:main",
-            "amp_rcs_server = amp_rcs.dummy_server:main"
+            'kart_commander = amp_kart_commander.kart_commander:main',
+            'switch_mux = amp_kart_commander.switch_mux:main'
         ],
     },
 )
