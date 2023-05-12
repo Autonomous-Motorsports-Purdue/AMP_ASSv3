@@ -44,7 +44,7 @@ class CostMapSubscriber(Node):
         """
         Gets params and sets up subscribes/publishes to the required nodes.
         """
-        super().__init__('costmap_subscriber')
+        super().__init__('find_local_goal')
 
         goal_update_freq = self.get_parameter("/goal_update_freq")
         self.parabola_numer = self.get_parameter("/parabola_numer")
