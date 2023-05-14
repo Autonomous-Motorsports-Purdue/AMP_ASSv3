@@ -1,7 +1,7 @@
 from amp_msgs.srv import NetworkState
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Bool
+from std_msgs.msg import String
 import time
 
 
@@ -10,10 +10,10 @@ class ServiceClient(Node):
     def __init__(self):
         super().__init__('service_client')
         self.client = self.create_client(NetworkState, 'network_state')
-        self.publisher_ = self.create_publisher(Bool, '/stop', 2)
+        self.publisher_ = self.create_publisher(String, '/select_topic', 2)
         if not self.client.wait_for_service(timeout_sec=5.0):
-            kill_msg = Bool()
-            kill_msg.data = True
+            kill_msg = String()
+            kill_msg.data = "__none"
             self.publisher_.publish(kill_msg)
             self.get_logger().info("Kill msg sent")
 
