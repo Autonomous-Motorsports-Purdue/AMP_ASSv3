@@ -8,3 +8,6 @@
 [submodule "src/patchwork-plusplus-ros"]
 	path = src/patchwork-plusplus-ros
 	url = git@github.com:Autonomous-Motorsports-Purdue/patchwork-plusplus-ros.git
+[submodule "ros2bag_tools"]
+	path = ros2bag_tools
+	url = https://github.com/kettenhoax/ros2bag_tools
