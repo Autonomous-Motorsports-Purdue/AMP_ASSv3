@@ -11,7 +11,7 @@ def generate_launch_description():
     joy_dev = launch.substitutions.LaunchConfiguration('joy_dev')
     config_filepath = launch.substitutions.LaunchConfiguration(
         'config_filepath')
-    remappings = [('/cmd_vel', 'joy_vel')]
+    remappings = [('/cmd_vel', '/cmd_vel')]
 
     return launch.LaunchDescription([
         launch.actions.DeclareLaunchArgument('joy_config',
@@ -30,7 +30,8 @@ def generate_launch_description():
                                 executable='joy_node',
                                 name='joy_node',
                                 parameters=[{
-                                    'dev': joy_dev,
+                                    'device_name': joy_dev,
+                                    'device_id': 0,
                                     'deadzone': 0.3,
                                     'autorepeat_rate': 20.0,
                                 }],

@@ -1,7 +1,7 @@
 amp_local_goal:
   ros__parameters:
     goal_update_freq: 3 # Frequency to publish goal pose regardless of costmap availability
-    parabola_numerator: -4 # Goal selection is fixed to a prabolic region in order to bias it to the robot's "front"
-    parabola_denominator: 5
+    parabola_numer: -4 # Goal selection is fixed to a prabolic region in order to bias it to the robot's "front"
+    parabola_denomin: 5
     show_costmaps: false # Debugging views
     costmap_threshold: 100 # Threshold above which costmap voxels are treated as obstacles

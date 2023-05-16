@@ -1,19 +1,55 @@
 import os
-
-from ament_index_python.packages import get_package_share_directory
+import yaml
+from ament_index_python.packages import get_package_share_directory, get_package_share_path
 
 from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch import LaunchDescription
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
 import xacro
 
+def vlp16():
+    share_path = get_package_share_path('amp_kart_bringup')
+    params_file = str(share_path / 'params' / 'VLP16.params.yaml')
+    with open(params_file, 'r') as f:
+        params = yaml.safe_load(f)
 
+    driver_params = params['velodyne_driver_node']['ros__parameters']
+    convert_params = params['velodyne_transform_node']['ros__parameters']
+    convert_params['calibration'] = str(share_path / 'params' / 'VLP16db.yaml')
+    laserscan_params = params['velodyne_laserscan_node']['ros__parameters']
+
+    container = ComposableNodeContainer(
+        name='velodyne_container',
+        namespace='',
+        package='rclcpp_components',
+        executable='component_container',
+        composable_node_descriptions=[
+            ComposableNode(package='velodyne_driver',
+                           plugin='velodyne_driver::VelodyneDriver',
+                           name='velodyne_driver_node',
+                           parameters=[driver_params]),
+            ComposableNode(package='velodyne_pointcloud',
+                           plugin='velodyne_pointcloud::Convert',
+                           name='velodyne_convert_node',
+                           parameters=[convert_params]),
+            ComposableNode(package='velodyne_laserscan',
+                           plugin='velodyne_laserscan::VelodyneLaserScan',
+                           name='velodyne_laserscan_node',
+                           parameters=[laserscan_params]),
+        ],
+        output='both')
+        
+    return container
+   
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
     description_share_path = get_package_share_directory(
@@ -35,7 +71,9 @@ def generate_launch_description():
                                       executable='robot_state_publisher',
                                       parameters=[{
                                           'robot_description':
-                                          robot_description
+                                          robot_description,
+                                          'use_tf_static': 'false',
+                                          'ignore_timestamp': 'false'
                                       }])
 
     sensor_launch_group = GroupAction([
@@ -50,9 +88,9 @@ def generate_launch_description():
     patchworkpp_demo_node = Node(package='patchworkpp',
                                  executable='demo',
                                  remappings=[('cloud', 'patchworkpp_cloud'),
-                                             ('ground', 'patchworkpp_ground'),
-                                             ('nonground',
-                                              'patchworkpp_nonground')],
+-                                             ('ground', 'patchworkpp_ground'),
+-                                             ('nonground',
+-                                              'patchworkpp_nonground')],
                                  parameters=[
                                      os.path.join(bringup_share_dir, 'params',
                                                   'patchworkpp.params.yaml')
@@ -76,5 +114,6 @@ def generate_launch_description():
     ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)
     ld.add_action(pointcloud_to_laserscan_node)
+    ld.add_action(vlp16())
 
     return ld
