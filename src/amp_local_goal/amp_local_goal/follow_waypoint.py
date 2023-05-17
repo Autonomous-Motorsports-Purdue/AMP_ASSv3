@@ -36,9 +36,9 @@ class CostMapSubscriber(Node):
         self.declare_parameter('show_costmaps', True)
         self.declare_parameter('costmap_threshold', 100)
 
-        self.parabola_ratio = self.get_parameter("parabola_ratio")
-        self.show_costmaps = self.get_parameter("show_costmaps")
-        self.costmap_threshold = self.get_parameter("costmap_threshold")
+        self.parabola_ratio = self.get_parameter("parabola_ratio").value
+        self.show_costmaps = self.get_parameter("show_costmaps").value
+        self.costmap_threshold = self.get_parameter("costmap_threshold").value
 
         # read costmap values, calculate next goal
         self.create_subscription(Costmap, '/costmap',
@@ -120,12 +120,12 @@ class CostMapSubscriber(Node):
         msg = Twist()
         msg.linear.x = scaled_power
         msg.angular.z = angle * 1
-        self.goal_pose_publisher.publish(msg)
+        self.goal_vel_publisher.publish(msg)
 
         # display costmaps in GUI
         if self.show_costmaps:
             self.get_logger().info(
-                f"Plotted goal pixel coords: {[centx, centy]}")
+                f"Plotted goal pixel coords: {[max_loc[0], max_loc[1]]}")
 
             # add green point for current goal
             result = costmapArray.copy()
