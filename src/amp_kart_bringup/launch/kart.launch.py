@@ -1,27 +1,27 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
-
+import launch
 from launch import LaunchDescription
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
-from launch_ros.actions import Node
+from launch_ros.actions import Node, LifecycleNode
 from launch_ros.parameter_descriptions import ParameterValue
 
 import xacro
-
+import yaml
+from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
 
-    costmap_2d = Node(
-    	package='nav2_costmap_2d'
-    	executable='nav2_costmap_2d_node'
-    	name='nav2_costmap_2d_node'
-    	arguments=[os.path.join(bringup_share_dir, 'params','costmap.params.yaml')])
+    micro_ros_agent_node = Node(
+        package='micro_ros_agent',
+        executable='micro_ros_agent',
+        name='pc2im')
     
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
@@ -45,7 +45,7 @@ def generate_launch_description():
     local_goal = Node(package='amp_local_goal',
                     executable='local_goal_node',
                     name='local_goal_node',
-                    parameters=[os.path.join(bringup_share_dir, 'params', 'local_goal.params.py')],
+                    parameters=[os.path.join(bringup_share_dir, 'params', 'local_goal.params.yaml')],
                     remappings=[
                     ])
 
@@ -61,9 +61,9 @@ def generate_launch_description():
     patchworkpp_demo_node = Node(package='patchworkpp',
                                  executable='demo',
                                  remappings=[('cloud_topic', '/velodyne_points'),
-                                             ('cloud', 'patchworkpp_cloud'),
-                                             ('ground', 'patchworkpp_ground'),
-                                             ('nonground', 'patchworkpp_nonground')],
+                                             ('cloud', '/patchworkpp_cloud'),
+                                             ('ground', '/ground'),
+                                             ('nonground', '/nonground')],
                                  parameters=[
                                      os.path.join(bringup_share_dir, 'params',
                                                   'patchworkpp.params.yaml')
@@ -81,5 +81,6 @@ def generate_launch_description():
     # ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)
     ld.add_action(local_goal)
+    ld.add_action(action)
 
     return ld

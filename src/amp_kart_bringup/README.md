@@ -34,6 +34,19 @@ and (expected) topic publishers:
   - `nav_vel` ~ `nav2`: 10
   - `mux1_vel` ~ `mux1`: 100
 
+## Running
+
+Several separate launch files need to be launched on the kart to run the full stack. In case one launch fails, restart it.
+
+First launch
+`kart_bringup.launch.py`, which contains `kart.launch.py` (`VLP16.launch.py`, `zed.launch.py`), `bringup.launch.py`, `twist_mux.launch.py`
+
+Then 
+`nav2_bringup.launch.py`, which contains `slam.launch.py`, `localization.launch.py`, `navigation.launch.py` 
+ 
+ Then on the laptop launch
+`laptop_bringup.launch.py`, which contains `rviz.launch.py`, `teleop.launch.py`
+
 ## Directory Tree
 
 - `config/`
