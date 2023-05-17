@@ -23,11 +23,11 @@ class Flatten(Node):
         super().__init__('flatten')
 
         # read costmap values, calculate next goal
-        self.create_subscription(PointCloud2, '/velodyne_points',
-                                 self.callback, 10)
+        self.create_subscription(PointCloud2, '/nonground',
+                                 self.callback, 2)
 
         self.costmap_pub = self.create_publisher(
-            Float32MultiArray, '/costmapf', 10)
+            Float32MultiArray, '/costmapf', 3)
         
     def callback(self, ros_point_cloud):
         xyz = np.array([[0,0,0]])

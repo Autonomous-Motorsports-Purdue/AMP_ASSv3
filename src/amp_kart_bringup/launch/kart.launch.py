@@ -29,26 +29,7 @@ def generate_launch_description():
     #     configuration = yaml.safe_load(f)
     #     print(f'Loaded configuration: {configuration["costmap"]["ros__parameters"]}')
 
-    action = GroupAction(actions=[
-        LifecycleNode(
-            package='nav2_recoveries',
-            executable='recoveries_server',
-            name='nodename',
-            namespace='',
-            parameters=[costmap_params],
-            ),
 
-        LifecycleNode(
-            package = 'nav2_lifecycle_manager',
-            executable = 'lifecycle_manager',
-            name = 'lifecycle_manager',
-            namespace = 'costmap_namespace',
-            parameters = [
-                {'autostart' : True},
-                {'node_names' : ['nodename']},
-            ],
-        )
-    ])
     
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
@@ -69,16 +50,18 @@ def generate_launch_description():
                                           robot_description
                                       }])
     
-    flatten = Node(package='flatten',
-                    executable='flatten_node',
-                    name='flatten')
     
     local_goal = Node(package='amp_local_goal',
                     executable='local_goal_node',
                     name='local_goal_node',
                     parameters=[os.path.join(bringup_share_dir, 'params', 'local_goal.params.yaml')],
                     remappings=[
+                    	
                     ])
+                    
+    flatten = Node(package='flatten',
+                    executable='flatten_node',
+                    name='flatten',)
 
     sensor_launch_group = GroupAction([
         IncludeLaunchDescription(
@@ -107,11 +90,11 @@ def generate_launch_description():
                               default_value='/dev/ttyUSB0',
                               description='Serial TTY absolute file location'))
 
-    # ld.add_action(micro_ros_agent_node)
+    ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)
     ld.add_action(local_goal)
     ld.add_action(flatten)
- 
+
     return ld

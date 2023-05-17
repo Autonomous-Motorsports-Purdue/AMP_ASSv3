@@ -65,6 +65,8 @@ class CostMapSubscriber(Node):
             for j in range(costmapWidth):
                 costmapArray[i][j] = costmap[costmapIndex]
                 costmapIndex += 1
+                
+        costmapArray = cv2.flip(costmapArray, 1)
 
         # threshold for costmap values that meet our minimum (atm, just under inflation buffer)
         threshCostmap = cv2.threshold(costmapArray, self.costmap_threshold,
@@ -88,7 +90,7 @@ class CostMapSubscriber(Node):
 
         threshCostmap = scipy.ndimage.rotate(
             threshCostmap,
-            angle=-90,
+            angle=180,
             reshape=False,
             mode='nearest')
         mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
@@ -106,7 +108,7 @@ class CostMapSubscriber(Node):
         
         delta_x = max_loc[0] - costmapWidth
         delta_y = max_loc[1] - costmapHeight
-        angle = math.atan2(delta_y, delta_x) - math.pi / 2
+        angle = math.atan2(delta_y, delta_x) + math.pi / 2 + 0.58
 
         CENTER_POWER = 0.38
         MIN_POWER = 0.1
