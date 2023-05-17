@@ -69,20 +69,9 @@ def generate_launch_description():
                                           robot_description
                                       }])
     
-    flatten = Node(package='amp_kart_segmentation',
-                    executable='segmentation',
-                    name='flatten',
-                    parameters=[{'resolution': 0.3},
-                                {'minx': -50.},
-                                {'maxx': 50.},
-                                {'miny': -50.},
-                                {'maxy': 50.}],
-                    remappings=[
-                        ('~/input', '/nonground'),
-                        ('~/output', '/costmap')
-                    ],
-                    # prefix=['xterm -e gdb -ex run --args'],
-                    )
+    flatten = Node(package='flatten',
+                    executable='flatten_node',
+                    name='flatten')
     
     local_goal = Node(package='amp_local_goal',
                     executable='local_goal_node',
@@ -120,9 +109,9 @@ def generate_launch_description():
 
     # ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
-    # ld.add_action(sensor_launch_group)
+    ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)
     ld.add_action(local_goal)
     ld.add_action(flatten)
-
+ 
     return ld
