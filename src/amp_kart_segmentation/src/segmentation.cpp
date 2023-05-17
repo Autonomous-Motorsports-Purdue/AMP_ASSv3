@@ -66,11 +66,12 @@ private:
 	    pcl::fromROSMsg(*input, cloud);
         RCLCPP_INFO(get_logger(), "Pointcloud received of size %ld \n", cloud.size());
 
-        for(long i = 0; i < (long) cloud.size(); i++) {
-            if (cloud[i].y < maxy && cloud[i].x < maxx && cloud[i].y > miny && cloud[i].x < minx) {
-                double h = (cloud[i].y - miny) / resolution;
-                double w = (cloud[i].x - minx) / resolution;
-                costmap.data[(long)(h * costmap.metadata.size_y + w)] += 1;
+        for(long i = 0; i < (long) cloud.points.size(); i++) {
+            if (cloud.points[i].y < maxy && cloud.points[i].x < maxx && cloud.points[i].y > miny && cloud.points[i].x > minx) {
+                double h = (cloud.points[i].y - miny) / resolution;
+                double w = (cloud.points[i].x - minx) / resolution;
+                if(costmap.data[(long)(w * costmap.metadata.size_x + h)] < 255)
+                    costmap.data[(long)(h * costmap.metadata.size_y + w)] += 1;
             }
         }
 

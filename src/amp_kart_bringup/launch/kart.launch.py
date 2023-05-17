@@ -45,16 +45,16 @@ def generate_launch_description():
     flatten = Node(package='amp_kart_segmentation',
                     executable='segmentation',
                     name='flatten',
-                    parameters=[{'resolution': 0.1},
-                                {'minx': -20.},
-                                {'maxx': 20.},
-                                {'miny': -20.},
-                                {'maxy': 20.}],
+                    parameters=[{'resolution': 0.2},
+                                {'minx': -5.},
+                                {'maxx': 5.},
+                                {'miny': -5.},
+                                {'maxy': 5.}],
                     remappings=[
                         ('~/input', '/nonground'),
                         ('~/output', '/costmap')
                     ],
-                    #prefix=['xterm -e gdb -ex run --args'],
+                    # prefix=['xterm -e gdb -ex run --args'],
                     )
     
     local_goal = Node(package='amp_local_goal',
