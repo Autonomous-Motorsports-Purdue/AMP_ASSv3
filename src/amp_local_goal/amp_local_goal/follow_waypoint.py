@@ -53,8 +53,8 @@ class CostMapSubscriber(Node):
        
         # Initialize costmap
         costmap = msg.data
-        costmapWidth = msg.layout.dim[0]
-        costmapHeight = msg.layout.dim[1]
+        costmapWidth = msg.layout.dim[0].size
+        costmapHeight = msg.layout.dim[1].size
         
         costmapArray = np.zeros((costmapHeight, costmapWidth), dtype=np.uint8)
 
@@ -114,8 +114,8 @@ class CostMapSubscriber(Node):
         # a 70 deg turn drops you 100% power
 
         power = 1 - math.degrees(abs(angle)) / 70
-        if scaled_power < MIN_POWER:
-            scaled_power = MIN_POWER
+        if power < MIN_POWER:
+            power = MIN_POWER
         scaled_power = power * 0.5 + CENTER_POWER
         
 
