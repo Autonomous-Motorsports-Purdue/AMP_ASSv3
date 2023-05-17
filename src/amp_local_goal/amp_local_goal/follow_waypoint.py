@@ -112,9 +112,10 @@ class CostMapSubscriber(Node):
         # a 70 deg turn drops you 100% power
 
         power = 1 - math.degrees(abs(angle)) / 70
-        scaled_power = power * 0.5 + CENTER_POWER
         if scaled_power < MIN_POWER:
             scaled_power = MIN_POWER
+        scaled_power = power * 0.5 + CENTER_POWER
+        
 
         msg = Twist()
         msg.linear.x = scaled_power

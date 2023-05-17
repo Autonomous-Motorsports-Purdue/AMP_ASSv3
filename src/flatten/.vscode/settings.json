@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/berliernj/AMP_ASSV3/install/zed_interfaces/lib/python3.8/site-packages",
+        "/home/berliernj/AMP_ASSV3/install/amp_local_goal/lib/python3.8/site-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/berliernj/AMP_ASSV3/install/zed_interfaces/lib/python3.8/site-packages",
+        "/home/berliernj/AMP_ASSV3/install/amp_local_goal/lib/python3.8/site-packages",
+        "/opt/ros/foxy/lib/python3.8/site-packages"
+    ]
+}
