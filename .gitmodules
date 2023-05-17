@@ -11,3 +11,9 @@
 [submodule "ros2bag_tools"]
 	path = ros2bag_tools
 	url = https://github.com/kettenhoax/ros2bag_tools
+[submodule "src/--init"]
+	path = src/--init
+	url = https://github.com/Kettenhoax/ros2bag_tools
+[submodule "src/ros2bag_tools"]
+	path = src/ros2bag_tools
+	url = https://github.com/Kettenhoax/ros2bag_tools

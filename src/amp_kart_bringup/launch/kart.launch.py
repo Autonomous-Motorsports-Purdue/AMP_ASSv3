@@ -16,9 +16,6 @@ import xacro
 
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
-    description_share_path = get_package_share_directory(
-        'amp_kart_description')
-    model_path = os.path.join(description_share_path, 'urdf', 'racecar.xacro')
 
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
@@ -27,8 +24,9 @@ def generate_launch_description():
         arguments=['serial', '--dev',
                    LaunchConfiguration('serial_tty')])
 
+    urdf_model_path = os.path.join(get_package_share_directory('amp_kart_description'), 'urdf', 'racecar.xacro')
     robot_description = ParameterValue(xacro.process_file(
-        str(model_path)).toprettyxml(indent='  '),
+        str(urdf_model_path)).toprettyxml(indent='  '),
                                        value_type=str)
 
     robot_state_publisher_node = Node(package='robot_state_publisher',
@@ -37,6 +35,13 @@ def generate_launch_description():
                                           'robot_description':
                                           robot_description
                                       }])
+    
+    local_goal = Node(package='amp_local_goal',
+                    executable='local_goal_node',
+                    name='local_goal_node',
+                    parameters=[os.path.join(bringup_share_dir, 'params', 'local_goal.params.py')],
+                    remappings=[
+                    ])
 
     sensor_launch_group = GroupAction([
         IncludeLaunchDescription(
@@ -49,20 +54,14 @@ def generate_launch_description():
 
     patchworkpp_demo_node = Node(package='patchworkpp',
                                  executable='demo',
-                                 remappings=[('cloud', 'patchworkpp_cloud'),
+                                 remappings=[('cloud_topic', '/velodyne_points'),
+                                             ('cloud', 'patchworkpp_cloud'),
                                              ('ground', 'patchworkpp_ground'),
-                                             ('nonground',
-                                              'patchworkpp_nonground')],
+                                             ('nonground', 'patchworkpp_nonground')],
                                  parameters=[
                                      os.path.join(bringup_share_dir, 'params',
                                                   'patchworkpp.params.yaml')
                                  ])
-
-    pointcloud_to_laserscan_node = Node(
-        package='pointcloud_to_laserscan',
-        executable='pointcloud_to_laserscan_node',
-        remappings=[('scan', 'flattened_pointcloud'),
-                    ('cloud_in', 'velodyne_points')])
 
     ld = LaunchDescription()
 
@@ -71,10 +70,10 @@ def generate_launch_description():
                               default_value='/dev/ttyUSB0',
                               description='Serial TTY absolute file location'))
 
-    ld.add_action(micro_ros_agent_node)
+    # ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
-    ld.add_action(sensor_launch_group)
+    # ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)
-    ld.add_action(pointcloud_to_laserscan_node)
+    ld.add_action(local_goal)
 
     return ld
