@@ -7,10 +7,12 @@ import sensor_msgs_py.point_cloud2 as pc
 import rclpy
 import numpy as np
 from rclpy.node import Node
-from nav2_msgs.msg import Costmap
+
 import cv2
 from geometry_msgs.msg import Twist
 import scipy.ndimage
+
+from std_msgs.msg import Float32MultiArray, MultiArrayDimension
 
 class Flatten(Node):
 
@@ -25,7 +27,7 @@ class Flatten(Node):
                                  self.callback, 10)
 
         self.costmap_pub = self.create_publisher(
-            Costmap, '/costmap', 10)
+            Float32MultiArray, '/costmapf', 10)
         
     def callback(self, ros_point_cloud):
         xyz = np.array([[0,0,0]])
@@ -56,17 +58,23 @@ class Flatten(Node):
             
         in_range = (xyz[:, 0] < x_max) & (xyz[:, 0] > x_min) & (xyz[:, 1] < y_max) & (xyz[:, 1] > y_min)
         
-        print('inrange', in_range.shape)
-        print('xyz', xyz.shape)
+        # print('inrange', in_range.shape)
+        # print('xyz', xyz.shape)
         xyz_pixels = ((xyz[in_range, 0:2] - np.array([x_min, y_min])) / res).astype(int)
         heat = np.zeros((int((x_max-x_min)/res), int((y_max - y_min)/res)), dtype=int)
         heat[xyz_pixels[:, 0], xyz_pixels[:, 1]] = 230
         
+        tosend = heat.flatten().tolist()
+        tosend = [float(elem) for elem in tosend]
+        costmap = Float32MultiArray()
+        costmap.data = tosend
+        costmap.layout.dim = Set([MultiArrayDimension(size=heat.shape[0]), MultiArrayDimension(size=heat.shape[1])])
+        print('sending this', tosend)
+        self.costmap_pub.publish(tosend)
         
-        print(xyz_pixels)
-        
-        cv2.imshow('heat', heat.astype(np.uint8))
-        cv2.waitKey(1)
+        if False:
+            cv2.imshow('heat', heat.astype(np.uint8))
+            cv2.waitKey(1)
 
 def main():
     rclpy.init(args=None)

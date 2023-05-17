@@ -2,10 +2,11 @@ import math
 import rclpy
 import numpy as np
 from rclpy.node import Node
-from nav2_msgs.msg import Costmap
+
 import cv2
 from geometry_msgs.msg import Twist
 import scipy.ndimage
+from std_msgs.msg import Float32MultiArray
 
 # Costmap values (hardcoded in ROS)
 LETHAL_OBSTACLE = 254
@@ -41,7 +42,7 @@ class CostMapSubscriber(Node):
         self.costmap_threshold = self.get_parameter("costmap_threshold").value
 
         # read costmap values, calculate next goal
-        self.create_subscription(Costmap, '/costmap',
+        self.create_subscription(Float32MultiArray, '/costmapf',
                                  self.costmap_callback, 10)
 
         # Publish new goal pose for nav2 with timer
@@ -52,8 +53,9 @@ class CostMapSubscriber(Node):
        
         # Initialize costmap
         costmap = msg.data
-        costmapWidth = msg.metadata.size_y
-        costmapHeight = msg.metadata.size_x
+        costmapWidth = msg.layout.dim[0]
+        costmapHeight = msg.layout.dim[1]
+        
         costmapArray = np.zeros((costmapHeight, costmapWidth), dtype=np.uint8)
 
         print(type(costmap))
