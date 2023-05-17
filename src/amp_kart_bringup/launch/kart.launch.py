@@ -20,6 +20,12 @@ def generate_launch_description():
         'amp_kart_description')
     model_path = os.path.join(description_share_path, 'urdf', 'racecar.xacro')
 
+    costmap_2d = Node(
+    	package='nav2_costmap_2d'
+    	executable='nav2_costmap_2d_node'
+    	name='nav2_costmap_2d_node'
+    	arguments=[os.path.join(bringup_share_dir, 'params','costmap.params.yaml')])
+    
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
         executable='micro_ros_agent',
