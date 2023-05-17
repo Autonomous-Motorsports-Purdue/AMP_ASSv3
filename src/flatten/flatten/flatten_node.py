@@ -69,7 +69,7 @@ class Flatten(Node):
         costmap = Float32MultiArray()
         costmap.data = tosend
         costmap.layout.dim = Set([MultiArrayDimension(size=heat.shape[0]), MultiArrayDimension(size=heat.shape[1])])
-        print('sending this', tosend)
+        # print('sending this', tosend)
         self.costmap_pub.publish(tosend)
         
         if False:
