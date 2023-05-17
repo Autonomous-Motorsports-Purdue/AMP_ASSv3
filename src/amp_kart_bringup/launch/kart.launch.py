@@ -17,6 +17,12 @@ import xacro
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
 
+    costmap_2d = Node(
+    	package='nav2_costmap_2d'
+    	executable='nav2_costmap_2d_node'
+    	name='nav2_costmap_2d_node'
+    	arguments=[os.path.join(bringup_share_dir, 'params','costmap.params.yaml')])
+    
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
         executable='micro_ros_agent',

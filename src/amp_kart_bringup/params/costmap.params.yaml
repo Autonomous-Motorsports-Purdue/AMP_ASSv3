@@ -1,0 +1,31 @@
+local_costmap:
+    ros__parameters:
+      always_send_full_costmap: True
+      footprint_padding: 0.05
+      footprint: "[[-0.3556, 0.7112], [-0.3556, -0.7112], [1.6256, -0.7112], [1.6256, 0.7112]]"
+      global_frame: odom
+      height: 10
+      width: 10
+      lethal_cost_threshold: 100
+      map_topic: map
+      publish_frequency: 2.0
+      resolution: 0.1
+      robot_base_frame: base_link
+      rolling_window: True
+      track_unknown_space: false
+      transform_tolerance: 0.3
+      update_frequency: 5.0
+      use_maximum: False
+      use_sim_time: True
+      plugins: ["global_static", "inflation_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.55
+      global_static:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+        subscribe_to_updates: true
+        map_subscribe_transient_local: false
+        transform_tolerance: 0.0
+        map_topic: "/global_costmap/costmap"
