@@ -68,9 +68,10 @@ class Flatten(Node):
         tosend = [float(elem) for elem in tosend]
         costmap = Float32MultiArray()
         costmap.data = tosend
-        costmap.layout.dim = Set([MultiArrayDimension(size=heat.shape[0]), MultiArrayDimension(size=heat.shape[1])])
-        # print('sending this', tosend)
-        self.costmap_pub.publish(tosend)
+
+        costmap.layout.dim = [MultiArrayDimension(size=heat.shape[0]), MultiArrayDimension(size=heat.shape[1])]
+        # print('sending this', costmap)
+        self.costmap_pub.publish(costmap)
         
         if False:
             cv2.imshow('heat', heat.astype(np.uint8))
