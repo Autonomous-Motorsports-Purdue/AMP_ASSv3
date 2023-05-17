@@ -18,10 +18,37 @@ from nav2_common.launch import RewrittenYaml
 def generate_launch_description():
     bringup_share_dir = get_package_share_directory('amp_kart_bringup')
 
-    micro_ros_agent_node = Node(
-        package='micro_ros_agent',
-        executable='micro_ros_agent',
-        name='pc2im')
+    costmap_params = os.path.join(bringup_share_dir, 'params','costmap.params.yaml')
+    # costmap_params = RewrittenYaml(
+    #     source_file=costmap_params,
+    #     root_key='costmap',
+    #     param_rewrites={},
+    #     convert_types=True)
+
+    # with open(costmap_params, 'r') as f:
+    #     configuration = yaml.safe_load(f)
+    #     print(f'Loaded configuration: {configuration["costmap"]["ros__parameters"]}')
+
+    action = GroupAction(actions=[
+        LifecycleNode(
+            package='nav2_recoveries',
+            executable='recoveries_server',
+            name='nodename',
+            namespace='',
+            parameters=[costmap_params],
+            ),
+
+        LifecycleNode(
+            package = 'nav2_lifecycle_manager',
+            executable = 'lifecycle_manager',
+            name = 'lifecycle_manager',
+            namespace = 'costmap_namespace',
+            parameters = [
+                {'autostart' : True},
+                {'node_names' : ['nodename']},
+            ],
+        )
+    ])
     
     micro_ros_agent_node = Node(
         package='micro_ros_agent',
@@ -45,11 +72,11 @@ def generate_launch_description():
     flatten = Node(package='amp_kart_segmentation',
                     executable='segmentation',
                     name='flatten',
-                    parameters=[{'resolution': 0.2},
-                                {'minx': -5.},
-                                {'maxx': 5.},
-                                {'miny': -5.},
-                                {'maxy': 5.}],
+                    parameters=[{'resolution': 0.05},
+                                {'minx': -2.},
+                                {'maxx': 2.},
+                                {'miny': -2.},
+                                {'maxy': 2.}],
                     remappings=[
                         ('~/input', '/nonground'),
                         ('~/output', '/costmap')
