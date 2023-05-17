@@ -5,7 +5,10 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
+
+      <!-- the tree that plans a path and follows it, with recovery actions -->
       <PipelineSequence name="NavigateWithReplanning">
+        <!-- once a second, try to compute a path, and if not possible, clear global costmap -->
         <RateController hz="1.0">
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
             <ComputePathToPose
@@ -19,15 +22,22 @@
             />
           </RecoveryNode>
         </RateController>
+
+        <!-- when not planning a path, follow it -->
         <RecoveryNode number_of_retries="1" name="FollowPath">
           <FollowPath path="{path}" controller_id="FollowPath" />
+
+          <!-- if collision or some error in following happens, then clear local costmap-->
           <ClearEntireCostmap
             name="ClearLocalCostmap-Context"
             service_name="local_costmap/clear_entirely_local_costmap"
           />
         </RecoveryNode>
       </PipelineSequence>
-      <ReactiveFallback name="RecoveryFallback">
+
+      <!-- the tree that runs if something catastrophic happens (like clear localcostmap fails, which it should never)-->
+      <!-- when this happens we are screwed so it has been removed -->
+      <!-- <ReactiveFallback name="RecoveryFallback">
         <GoalUpdated />
         <SequenceStar name="RecoveryActions">
           <ClearEntireCostmap
@@ -41,7 +51,8 @@
           <Spin spin_dist="1.57" />
           <Wait wait_duration="5" />
         </SequenceStar>
-      </ReactiveFallback>
+      </ReactiveFallback> -->
+
     </RecoveryNode>
   </BehaviorTree>
 </root>

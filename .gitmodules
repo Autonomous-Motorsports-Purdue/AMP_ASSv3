@@ -17,3 +17,6 @@
 [submodule "src/ros2bag_tools"]
 	path = src/ros2bag_tools
 	url = https://github.com/Kettenhoax/ros2bag_tools
+[submodule "Race-Control-System-Client"]
+	path = Race-Control-System-Client
+	url = https://github.com/Autonomous-Motorsports-Purdue/Race-Control-System-Client

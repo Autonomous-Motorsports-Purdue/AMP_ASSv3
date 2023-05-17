@@ -304,7 +304,7 @@
     </inertial>-->
   </link>
 
-  <joint name="camera_rgb_joint" type="fixed">
+  <joint name="zse" type="fixed">
     <origin xyz="0.005 0.018 0.013" rpy="0 0 0" />
     <!-- <origin xyz="${r200_cam_rgb_px} ${r200_cam_rgb_py} ${r200_cam_rgb_pz}" rpy="0 0 0"/> -->
     <parent link="camera_link" />
