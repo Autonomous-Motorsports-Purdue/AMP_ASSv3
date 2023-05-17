@@ -1,0 +1,5 @@
+local_goal_node:
+  ros__parameters:
+    parabola_ratio: -0.8
+    show_costmaps: true # Debugging views
+    costmap_threshold: 100 # Threshold above which costmap voxels are treated as obstacles

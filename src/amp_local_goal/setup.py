@@ -20,6 +20,6 @@ setup(
     license='Apache-2.0',
     tests_require=[],
     entry_points={
-        'console_scripts': ['listener = amp_local_goal.follow_waypoint:main'],
+        'console_scripts': ['local_goal_node = amp_local_goal.follow_waypoint:main'],
     },
 )
