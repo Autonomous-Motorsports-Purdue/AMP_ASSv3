@@ -2,4 +2,4 @@ local_goal_node:
   ros__parameters:
     parabola_ratio: -0.8
     show_costmaps: true # Debugging views
-    costmap_threshold: 2 # Threshold above which costmap voxels are treated as obstacles
+    costmap_threshold: 1 # Threshold above which costmap voxels are treated as obstacles

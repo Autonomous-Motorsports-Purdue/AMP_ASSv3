@@ -72,11 +72,11 @@ def generate_launch_description():
     flatten = Node(package='amp_kart_segmentation',
                     executable='segmentation',
                     name='flatten',
-                    parameters=[{'resolution': 0.05},
-                                {'minx': -2.},
-                                {'maxx': 2.},
-                                {'miny': -2.},
-                                {'maxy': 2.}],
+                    parameters=[{'resolution': 0.3},
+                                {'minx': -50.},
+                                {'maxx': 50.},
+                                {'miny': -50.},
+                                {'maxy': 50.}],
                     remappings=[
                         ('~/input', '/nonground'),
                         ('~/output', '/costmap')
