@@ -27,7 +27,7 @@ class Segmentation : public rclcpp::Node
 private:
     rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr cloud_sub;
     rclcpp::Publisher<nav2_msgs::msg::Costmap>::SharedPtr cloud_pub;
-    pcl::PointCloud<pointT> cloud;
+    pcl::PointCloud<pcl::PointXYZ> cloud;
 
 public:
     explicit Segmentation()
@@ -55,32 +55,27 @@ private:
         double miny = get_parameter("miny").as_double();
         double maxy = get_parameter("maxy").as_double();
 
-        using pointT = pcl::PointXYZ;
-        using cloudT = pcl::PointCloud<pointT>;
-
-        nav2_msgs::msg::Costmap::UniquePtr costmap(new nav2_msgs::msg::Costmap);
-        costmap->metadata.resolution = resolution;
-        costmap->metadata.size_x = (maxx - minx + 1) / resolution;
-        costmap->metadata.size_y = (maxy - miny + 1) / resolution;
-        costmap->header = input.header;
-        costmap->data.resize(costmap->metadata.size_y * costmap->metadata.size_x);
-
+        nav2_msgs::msg::Costmap costmap;
+        costmap.metadata.resolution = resolution;
+        costmap.metadata.size_x = (maxx - minx + 1) / resolution;
+        costmap.metadata.size_y = (maxy - miny + 1) / resolution;
+        costmap.header = input->header;
+        costmap.data.resize(costmap.metadata.size_y * costmap.metadata.size_x);
 
         // PointCloud2 to PCL cloud
-	    pcl::fromROSMsg(*input, &cloud);
+	    pcl::fromROSMsg(*input, cloud);
         RCLCPP_INFO(get_logger(), "Pointcloud received of size %ld \n", cloud.size());
 
-        for(size_t i = 0; i < cloud.size(); i++) {
+        for(long i = 0; i < (long) cloud.size(); i++) {
             if (cloud[i].y < maxy && cloud[i].x < maxx && cloud[i].y > miny && cloud[i].x < minx) {
-                size_t h = (cloud[i].y - miny) / resolution;
-                size_t w = (cloud[i].x - minx) / resolution;
-                costmap->data[h * costmap->metadata.size_y + w] += 1;
+                double h = (cloud[i].y - miny) / resolution;
+                double w = (cloud[i].x - minx) / resolution;
+                costmap.data[(long)(h * costmap.metadata.size_y + w)] += 1;
             }
         }
 
-
         // Publish
-        cloud_pub->publish(std::move(costmap));
+        cloud_pub->publish(costmap);
     }
 };
 
