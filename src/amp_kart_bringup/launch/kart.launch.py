@@ -90,7 +90,7 @@ def generate_launch_description():
                               default_value='/dev/ttyUSB0',
                               description='Serial TTY absolute file location'))
 
-    ld.add_action(micro_ros_agent_node)
+    #ld.add_action(micro_ros_agent_node)
     ld.add_action(robot_state_publisher_node)
     ld.add_action(sensor_launch_group)
     ld.add_action(patchworkpp_demo_node)

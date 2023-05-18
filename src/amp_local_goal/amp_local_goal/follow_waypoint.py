@@ -58,15 +58,15 @@ class CostMapSubscriber(Node):
         
         costmapArray = np.zeros((costmapHeight, costmapWidth), dtype=np.uint8)
 
-        print(type(costmap))
 
         costmapIndex = 0
         for i in range(costmapHeight):
             for j in range(costmapWidth):
                 costmapArray[i][j] = costmap[costmapIndex]
                 costmapIndex += 1
+        costmapArray = cv2.flip(costmapArray, 0)
                 
-        costmapArray = cv2.flip(costmapArray, 1)
+        #costmapArray = cv2.flip(costmapArray, 1)
 
         # threshold for costmap values that meet our minimum (atm, just under inflation buffer)
         threshCostmap = cv2.threshold(costmapArray, self.costmap_threshold,
@@ -88,11 +88,6 @@ class CostMapSubscriber(Node):
         for value in zip(mask_y_indices, mask_x_indices):
             mask[0:value[0], value[1]] = 1
 
-        threshCostmap = scipy.ndimage.rotate(
-            threshCostmap,
-            angle=180,
-            reshape=False,
-            mode='nearest')
         mask = cv2.copyMakeBorder(mask, 1, 1, 1, 1, cv2.BORDER_CONSTANT, (0))
         maskedThershCostmap = (threshCostmap * mask).astype('uint8')
 
@@ -104,11 +99,14 @@ class CostMapSubscriber(Node):
         # Find point furthest away from all obstacles
         max_loc = cv2.minMaxLoc(distImgNormalized)[3]
 
-        self.get_logger().info(f"local goal coords: {max_loc[0]} {max_loc[1]}")
+        self.get_logger().info(f"local goal coords x y : {max_loc[0]} {max_loc[1]}")
         
-        delta_x = max_loc[0] - costmapWidth
-        delta_y = max_loc[1] - costmapHeight
-        angle = math.atan2(delta_y, delta_x) + math.pi / 2 + 0.58
+        delta_y = max_loc[1] - costmapHeight // 2
+        delta_x = max_loc[0] - costmapWidth // 2
+        
+        angle = math.atan2(delta_y, delta_x)
+        angle = -(angle + math.pi / 2)
+        self.get_logger().info(f"raw angle {math.degrees(angle)}")
 
         CENTER_POWER = 0.38
         MIN_POWER = 0.1
@@ -123,7 +121,7 @@ class CostMapSubscriber(Node):
 
         msg = Twist()
         msg.linear.x = scaled_power
-        msg.angular.z = angle * 1
+        msg.angular.z = angle / 10
         self.goal_vel_publisher.publish(msg)
 
         # display costmaps in GUI
@@ -132,22 +130,24 @@ class CostMapSubscriber(Node):
                 f"Plotted goal pixel coords: {[max_loc[0], max_loc[1]]}")
 
             # add green point for current goal
-            result = costmapArray.copy()
-            result = cv2.cvtColor(result, cv2.COLOR_GRAY2BGR)
+            costmapdot = threshCostmap.copy()
+            costmapdot = cv2.cvtColor(costmapdot, cv2.COLOR_GRAY2BGR)
             centx = max_loc[0]
             centy = max_loc[1]
-            result = cv2.circle(result * 10, (centx, centy),
+            costmapdot = cv2.circle(costmapdot * 10, (centx, centy),
                                 5, (0, 100, 0),
                                 thickness=cv2.FILLED)
 
             # HACK: flip images so they are oriented correctly as they are shown in Rviz
-            distImgDisplay = cv2.flip(distImgNormalized, 1)
-            threshCostmapDisplay = cv2.flip(threshCostmap, 1)
-            result = cv2.flip(result, 1)
+            #distImgDisplay = cv2.flip(distImgNormalized, 1)
+            #threshCostmapDisplay = cv2.flip(threshCostmap, 1)
+            #result = cv2.flip(result, 1)
 
-            cv2.imshow('costmap', cv2.resize(result, (500, 500)))
-            cv2.imshow('costmapThresh', cv2.resize(threshCostmapDisplay, (500, 500)))
-            cv2.imshow('costampDist', cv2.resize(distImgDisplay, (500, 500)))
+            
+            cv2.imshow('costmap raw (as it comes in)', cv2.resize(costmapdot, (500, 500)))
+            cv2.imshow('costmap with paraola', cv2.resize(maskedThershCostmap, (500, 500)))
+            cv2.imshow('distance map', cv2.resize(distImgNormalized, (500, 500)))
+
             cv2.waitKey(1)
 
 

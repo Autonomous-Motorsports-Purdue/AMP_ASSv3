@@ -28,6 +28,8 @@ class Flatten(Node):
 
         self.costmap_pub = self.create_publisher(
             Float32MultiArray, '/costmapf', 3)
+            
+        self.get_logger().info(f"flattening init \n")
         
     def callback(self, ros_point_cloud):
         xyz = np.array([[0,0,0]])
@@ -71,6 +73,8 @@ class Flatten(Node):
 
         costmap.layout.dim = [MultiArrayDimension(size=heat.shape[0]), MultiArrayDimension(size=heat.shape[1])]
         # print('sending this', costmap)
+        
+        self.get_logger().info(f"flattening publish \n")
         self.costmap_pub.publish(costmap)
         
         if False:
