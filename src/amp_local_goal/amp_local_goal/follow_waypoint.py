@@ -121,7 +121,7 @@ class CostMapSubscriber(Node):
 
         msg = Twist()
         msg.linear.x = scaled_power
-        msg.angular.z = angle / 10
+        msg.angular.z = math.degrees(angle) / 100 
         self.goal_vel_publisher.publish(msg)
 
         # display costmaps in GUI
