@@ -1,0 +1,22 @@
+/adaptive_clustering:
+  ros__parameters:
+    cluster_size_max: 5000
+    cluster_size_min: 5
+    generate_bounding_boxes: true
+    k_merging_threshold: 0.10000000149011612
+    leaf: 1
+    print_fps: false
+    qos_overrides:
+      /parameter_events:
+        publisher:
+          depth: 1000
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+    radius_max: 120.0
+    radius_min: 0.4000000059604645
+    sensor_model: VLP-16
+    use_sim_time: false
+    z_axis_max: 10.0
+    z_axis_min: -0.800000011920929
+    z_merging_threshold: 0.0

@@ -60,6 +60,9 @@
   <xacro:property name="rfront_yoff" value="0" />
   <xacro:property name="rfront_zoff" value="0" />
 
+  <!--xacro:property name="lidar_xoff" value="0.7239" />
+  <xacro:property name="lidar_zoff" value="0.38" /-->
+
   <xacro:property name="lidar_xoff" value="1.2192" />
   <xacro:property name="lidar_zoff" value="0.508" />
 
